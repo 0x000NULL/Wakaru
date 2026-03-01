@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER MANAGEMENT
+// ============================================================================
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  password_hash     String
+  display_name      String?
+  created_at        DateTime  @default(now())
+  last_login_at     DateTime?
+  settings          Json      @default("{}")
+
+  // Relations
+  progress          UserProgress[]
+  minedSentences    MinedSentence[]
+  mediaProgress     UserMediaProgress[]
+
+  @@map("users")
+}
+
+// ============================================================================
+// SRS & PROGRESS TRACKING
+// ============================================================================
+
+model UserProgress {
+  id                String    @id @default(cuid())
+  user_id           String
+  category          String    // 'hiragana', 'katakana', 'vocabulary', 'kanji', 'grammar'
+  item_id           String    // Foreign key to respective table (vocabulary.id, kanji.id, etc.)
+
+  // SRS fields
+  repetitions       Int       @default(0)
+  ease_factor       Float     @default(2.5)
+  interval          Int       @default(0)     // in days
+  next_review_at    DateTime?
+  last_reviewed_at  DateTime?
+
+  // Performance tracking
+  total_reviews     Int       @default(0)
+  correct_reviews   Int       @default(0)
+
+  // Metadata
+  status            String    @default("new")  // 'new', 'learning', 'reviewing', 'mastered'
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  // Relations
+  user              User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, category, item_id])
+  @@index([user_id, next_review_at])
+  @@index([user_id, category])
+  @@map("user_progress")
+}
+
+// ============================================================================
+// VOCABULARY
+// ============================================================================
+
+model Vocabulary {
+  id                String    @id @default(cuid())
+  word              String    @unique
+  reading           String
+  meaning           String    @db.Text
+  part_of_speech    String?
+  jlpt_level        String?   // 'N5', 'N4', 'N3', 'N2', 'N1'
+  frequency_rank    Int?
+  tags              Json      @default("[]")
+  audio_url         String?
+
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  // Relations
+  sentences         VocabularySentence[]
+
+  @@index([frequency_rank])
+  @@index([jlpt_level])
+  @@map("vocabulary")
+}
+
+model ExampleSentence {
+  id                String    @id @default(cuid())
+  japanese          String    @db.Text
+  english           String    @db.Text
+  furigana          String?   @db.Text
+  audio_url         String?
+
+  created_at        DateTime  @default(now())
+
+  // Relations
+  vocabulary        VocabularySentence[]
+
+  @@map("example_sentences")
+}
+
+model VocabularySentence {
+  id                String    @id @default(cuid())
+  vocabulary_id     String
+  sentence_id       String
+
+  vocabulary        Vocabulary       @relation(fields: [vocabulary_id], references: [id], onDelete: Cascade)
+  sentence          ExampleSentence  @relation(fields: [sentence_id], references: [id], onDelete: Cascade)
+
+  @@unique([vocabulary_id, sentence_id])
+  @@map("vocabulary_sentences")
+}
+
+// ============================================================================
+// KANJI
+// ============================================================================
+
+model Kanji {
+  id                String    @id @default(cuid())
+  character         String    @unique
+  meanings          String    @db.Text      // JSON array of meanings
+  on_yomi           String?                  // JSON array
+  kun_yomi          String?                  // JSON array
+  nanori            String?                  // JSON array (name readings)
+
+  radicals          String?                  // JSON array of radical IDs
+  stroke_count      Int
+  grade             Int?                     // School grade (1-6, 8 for Jōyō)
+  jlpt_level        String?                  // 'N5', 'N4', 'N3', 'N2', 'N1'
+  frequency_rank    Int?
+
+  mnemonic          String?   @db.Text
+  stroke_order_svg  String?   @db.Text
+
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  @@index([jlpt_level])
+  @@index([frequency_rank])
+  @@index([grade])
+  @@map("kanji")
+}
+
+// ============================================================================
+// KANA (Hiragana & Katakana)
+// ============================================================================
+
+model Kana {
+  id                String    @id @default(cuid())
+  character         String    @unique
+  romaji            String
+  type              String    // 'hiragana' or 'katakana'
+  group             String    // 'vowel', 'k-row', 's-row', etc.
+  is_combination    Boolean   @default(false)
+
+  mnemonic          String?   @db.Text
+  stroke_order_svg  String?   @db.Text
+  audio_url         String?
+
+  @@index([type])
+  @@index([group])
+  @@map("kana")
+}
+
+// ============================================================================
+// GRAMMAR
+// ============================================================================
+
+model GrammarPattern {
+  id                String    @id @default(cuid())
+  pattern           String
+  meaning           String    @db.Text
+  formation         String    @db.Text
+  jlpt_level        String?   // 'N5', 'N4', 'N3', 'N2', 'N1'
+  difficulty        String?   // 'beginner', 'intermediate', 'advanced'
+
+  explanation       String    @db.Text
+  notes             String?   @db.Text
+  common_mistakes   String?   @db.Text
+
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  // Relations
+  examples          GrammarExample[]
+
+  @@index([jlpt_level])
+  @@map("grammar_patterns")
+}
+
+model GrammarExample {
+  id                String    @id @default(cuid())
+  pattern_id        String
+  japanese          String    @db.Text
+  english           String    @db.Text
+  furigana          String?   @db.Text
+
+  pattern           GrammarPattern @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
+
+  @@map("grammar_examples")
+}
+
+// ============================================================================
+// MEDIA & IMMERSION
+// ============================================================================
+
+model MediaContent {
+  id                String    @id @default(cuid())
+  title             String
+  title_english     String?
+  type              String    // 'anime', 'drama', 'movie', 'youtube'
+  difficulty        String    // 'beginner', 'intermediate', 'advanced'
+  jlpt_level        String?
+
+  description       String?   @db.Text
+  cover_image_url   String?
+  genres            Json      @default("[]")
+
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  // Relations
+  episodes          MediaEpisode[]
+  userProgress      UserMediaProgress[]
+
+  @@map("media_content")
+}
+
+model MediaEpisode {
+  id                String    @id @default(cuid())
+  media_id          String
+  episode_number    Int
+  title             String?
+  duration_seconds  Int?
+
+  video_url         String?
+  subtitle_ja_url   String?   // Japanese subtitle file URL (.srt/.ass)
+  subtitle_en_url   String?   // English subtitle file URL
+
+  media             MediaContent @relation(fields: [media_id], references: [id], onDelete: Cascade)
+
+  @@unique([media_id, episode_number])
+  @@map("media_episodes")
+}
+
+model UserMediaProgress {
+  id                String    @id @default(cuid())
+  user_id           String
+  media_id          String
+  episode_number    Int
+
+  watched_at        DateTime  @default(now())
+  progress_seconds  Int       @default(0)
+  completed         Boolean   @default(false)
+
+  user              User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  media             MediaContent @relation(fields: [media_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, media_id, episode_number])
+  @@map("user_media_progress")
+}
+
+// ============================================================================
+// SENTENCE MINING
+// ============================================================================
+
+model MinedSentence {
+  id                String    @id @default(cuid())
+  user_id           String
+
+  japanese          String    @db.Text
+  english           String?   @db.Text
+  furigana          String?   @db.Text
+
+  // Source metadata
+  source_media_id   String?
+  source_episode    Int?
+  source_timestamp  Int?      // seconds into episode
+
+  // Media attachments
+  audio_url         String?   // Audio clip URL
+  screenshot_url    String?   // Screenshot URL
+
+  notes             String?   @db.Text
+
+  created_at        DateTime  @default(now())
+
+  user              User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("mined_sentences")
+}
