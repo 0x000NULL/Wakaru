@@ -4,13 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Status
 
-**Current Phase**: Pre-development / Planning
-- No code has been implemented yet
-- See `plan.md` for detailed implementation roadmap
-- See `architecture.md` for complete technical architecture
-- See `goal.md` for project vision and objectives
+**Current Phase**: Phase 1A Foundation (Partially Complete)
+- ✅ Next.js 14+ project initialized with TypeScript and Tailwind CSS
+- ✅ Complete database schema defined in Prisma
+- ✅ Project folder structure created
+- ✅ Development environment configured
+- ⏳ Database migration pending (requires Docker Desktop)
+- 🔜 Next: Authentication system implementation
 
-**Next Steps**: Begin Phase 1A (Foundation) - Project setup, database configuration, and authentication system
+See `plan.md` for detailed implementation roadmap, `architecture.md` for complete technical architecture, and `goal.md` for project vision.
 
 ## Project Overview
 
@@ -77,6 +79,14 @@ src/
 
 ### 1. Database Schema
 
+**Location**: `prisma/schema.prisma`
+
+The complete schema is already defined with 13 models representing the entire application data structure. The schema uses:
+- **CUID** for primary keys (`@default(cuid())`)
+- **JSONB** for flexible data (tags, settings, array fields)
+- **Cascading deletes** to maintain referential integrity
+- **Strategic indexes** on frequently queried fields
+
 **Core Tables**:
 - `users`: User accounts with settings JSONB column
 - `user_progress`: SRS tracking (category, item_id, intervals, ease_factor, next_review_at)
@@ -88,16 +98,36 @@ src/
 - `mined_sentences`: User's personal sentence collection from immersion
 - `kana`: Hiragana/katakana reference table
 
-**Important Indexes**:
-- `idx_progress_next_review` on `user_progress(user_id, next_review_at)` for SRS queries
-- `idx_vocab_frequency` on `vocabulary(frequency_rank)`
-- GIN index on `vocabulary(tags)` for tag filtering
+**Critical Indexes** (already defined in schema):
+- `user_progress`: `[user_id, next_review_at]` - SRS due review queries
+- `user_progress`: `[user_id, category]` - Progress filtering
+- `vocabulary`: `[frequency_rank]` - Sorting by frequency
+- `vocabulary`: `[jlpt_level]` - JLPT level filtering
+- `kanji`: `[jlpt_level]`, `[frequency_rank]`, `[grade]` - Multiple access patterns
+- `kana`: `[type]`, `[group]` - Character lookups
 
-See `architecture.md` for complete schema definitions with CREATE TABLE statements.
+**Database Seeding**: Sample data includes 25 hiragana characters, 5 vocabulary words, and 3 grammar patterns. See `prisma/seed.ts`.
 
-### 2. SRS Algorithm (Modified SM-2)
+See `architecture.md` for complete schema definitions and detailed explanations.
 
-Located in `lib/utils/srs-algorithm.ts`:
+### 2. Prisma Client Singleton
+
+**Location**: `src/lib/db.ts`
+
+The Prisma client is exported as a singleton to prevent connection issues in development (Next.js hot reload). Always import from this file:
+
+```typescript
+import prisma from '@/lib/db'
+
+// Use in API routes, server components, server actions
+const users = await prisma.user.findMany()
+```
+
+**Critical**: Never instantiate `new PrismaClient()` directly elsewhere in the codebase.
+
+### 3. SRS Algorithm (Modified SM-2)
+
+Will be located in `src/lib/utils/srs-algorithm.ts` (not yet implemented):
 
 **Core Logic**:
 - Intervals: 1d → 6d → ~2w → ~1m → ~2m → ~4m → ~8m (adjusted by ease factor)
@@ -111,11 +141,13 @@ Located in `lib/utils/srs-algorithm.ts`:
 
 See `architecture.md` for complete implementation with TypeScript code.
 
-### 3. API Structure
+### 4. API Structure
+
+**Note**: API routes not yet implemented. Will be located in `src/app/api/v1/`.
 
 **Authentication**: JWT with HTTP-only cookies, bcrypt password hashing
 
-**Key Endpoints** (all under `/api/v1/`):
+**Planned Endpoints** (all under `/api/v1/`):
 - `auth/*`: register, login, logout, refresh, forgot-password, reset-password
 - `user/profile`, `user/stats`: User data and progress statistics
 - `vocabulary`, `vocabulary/:id`, `vocabulary/search`: Vocabulary management
@@ -133,7 +165,9 @@ Error: { success: false, error: { code, message, details? } }
 
 See `architecture.md` for complete endpoint specifications.
 
-### 4. Interactive Media Player
+### 5. Interactive Media Player
+
+**Note**: Not yet implemented. Planned for Phase 1E.
 
 **Core Features**:
 - Dual subtitles (Japanese with furigana + English)
@@ -143,9 +177,11 @@ See `architecture.md` for complete endpoint specifications.
 
 **Implementation**: Video.js or similar, subtitle parsing (.srt/.ass), dictionary API (JMdict)
 
-### 5. PWA Offline Support
+### 6. PWA Offline Support
 
-**Caching Strategy**:
+**Note**: Not yet implemented. Planned for Phase 2.
+
+**Planned Caching Strategy**:
 - Static assets: Cache-first
 - Content API (vocabulary/kanji/grammar): NetworkFirst with 1-week cache
 - SRS API: NetworkOnly with background sync queue
@@ -153,61 +189,107 @@ See `architecture.md` for complete endpoint specifications.
 
 ## Development Commands
 
-**Note**: These commands will be available once the project is initialized.
+### First-Time Setup (Docker Required)
 
-### Initial Setup
+The database requires Docker Desktop to be installed and running.
+
 ```bash
-# Initialize project
-npm create next-app@latest . -- --typescript --tailwind --app --src-dir
+# 1. Start PostgreSQL container
+docker compose up -d postgres
 
-# Install dependencies
-npm install prisma @prisma/client zustand react-hook-form zod bcryptjs jsonwebtoken
+# 2. Verify database is running
+docker compose ps
+docker compose logs postgres
 
-# Setup database (requires Docker for local PostgreSQL)
-docker-compose up -d postgres
-npx prisma init
-# Configure schema in prisma/schema.prisma
+# 3. Generate initial migration and apply to database
 npx prisma migrate dev --name init
+
+# 4. Seed database with sample data (hiragana, vocabulary, grammar)
 npx prisma db seed
 
-# Run development server
+# 5. Test database connection
+npx tsx src/lib/__test-db.ts
+
+# 6. Start development server
 npm run dev
 ```
 
-### Database
+### Daily Development
+
 ```bash
-# Generate Prisma client after schema changes
-npx prisma generate
+# Start dev server (hot reload enabled)
+npm run dev
 
-# Create new migration
-npx prisma migrate dev --name <migration_name>
-
-# Apply migrations to production
-npx prisma migrate deploy
-
-# Open Prisma Studio (database GUI)
+# Open Prisma Studio (visual database browser)
 npx prisma studio
 ```
 
-### Code Quality
+### Database Operations
+
 ```bash
-# Type checking
-npm run type-check
+# Generate Prisma Client after schema changes
+npx prisma generate
 
-# Linting
-npm run lint
+# Create new migration (auto-applies in dev)
+npx prisma migrate dev --name <migration_name>
 
-# Run tests
-npm test
+# Apply pending migrations (production)
+npx prisma migrate deploy
 
-# Format code
-npm run format
+# Reset database (WARNING: deletes all data)
+npx prisma migrate reset
+
+# Seed database with sample data
+npx prisma db seed
 ```
 
-### Deployment
-- **Staging**: Auto-deploy on push to `develop` branch
-- **Production**: Auto-deploy on push to `main` branch
-- Migrations run automatically via CI/CD pipeline
+### Docker Commands
+
+```bash
+# Start PostgreSQL
+docker compose up -d postgres
+
+# Stop PostgreSQL (preserves data)
+docker compose stop postgres
+
+# Stop and remove containers (preserves data in volume)
+docker compose down
+
+# View PostgreSQL logs
+docker compose logs -f postgres
+
+# Access PostgreSQL CLI
+docker compose exec postgres psql -U manabu_dev -d manabu_dev
+```
+
+### Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Format all code with Prettier
+npm run format
+
+# Check formatting without modifying files
+npm run format:check
+
+# Type check (no output = success)
+npx tsc --noEmit
+```
+
+### Build & Deployment
+
+```bash
+# Build for production
+npm run build
+
+# Start production server (after build)
+npm run start
+
+# Test production build locally
+npm run build && npm run start
+```
 
 ## Development Principles
 
