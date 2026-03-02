@@ -1,0 +1,50 @@
+'use client'
+
+import { cn } from '@/lib/utils/cn'
+import type { ReviewAnswer } from '@/types/review'
+
+const ratingColors: Record<string, string> = {
+  again: 'bg-red-500',
+  hard: 'bg-orange-500',
+  good: 'bg-green-500',
+  easy: 'bg-blue-500',
+}
+
+interface ReviewProgressBarProps {
+  current: number
+  total: number
+  answers: ReviewAnswer[]
+  className?: string
+}
+
+export function ReviewProgressBar({ current, total, answers, className }: ReviewProgressBarProps) {
+  return (
+    <div className={cn('space-y-1.5', className)}>
+      <div className="flex items-center justify-between text-sm">
+        <span className="font-medium text-foreground">
+          {Math.min(current, total)} / {total}
+        </span>
+        <span className="text-muted-foreground">
+          {answers.filter((a) => a.rating === 'good' || a.rating === 'easy').length} correct
+        </span>
+      </div>
+      <div className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-muted">
+        {Array.from({ length: total }).map((_, i) => {
+          const answer = answers[i]
+          const isCurrent = i === current - 1 && !answer
+          return (
+            <div
+              key={i}
+              className={cn(
+                'h-full flex-1 transition-colors',
+                isCurrent && 'bg-primary/40',
+                answer && ratingColors[answer.rating],
+                !answer && !isCurrent && 'bg-transparent',
+              )}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}

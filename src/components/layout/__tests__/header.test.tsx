@@ -68,7 +68,7 @@ describe('Header', () => {
 
   it('renders the logo', () => {
     render(<Header />)
-    expect(screen.getByText('ManabU')).toBeInTheDocument()
+    expect(screen.getByText('Wakaru')).toBeInTheDocument()
   })
 
   it('toggles mobile menu on hamburger click', async () => {

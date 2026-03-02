@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# Database Setup Script for ManabU
+# Database Setup Script for Wakaru
 # Run this from WSL2: bash setup-database.sh
 
 set -e  # Exit on any error
 
 echo "======================================"
-echo "ManabU Database Setup"
+echo "Wakaru Database Setup"
 echo "======================================"
 echo ""
 
 # Database connection string
-export DATABASE_URL="postgresql://manabu_dev:dev_password_123@localhost:5432/manabu_dev?schema=public"
+export DATABASE_URL="postgresql://wakaru_dev:dev_password_123@localhost:5432/wakaru_dev?schema=public"
 
 # Step 1: Start PostgreSQL
 echo "Step 1: Starting PostgreSQL container..."
@@ -33,7 +33,7 @@ echo ""
 
 # Step 3: Test connectivity
 echo "Step 3: Testing database connectivity..."
-if docker compose exec postgres psql -U manabu_dev -d manabu_dev -c "SELECT 1;" > /dev/null 2>&1; then
+if docker compose exec postgres psql -U wakaru_dev -d wakaru_dev -c "SELECT 1;" > /dev/null 2>&1; then
     echo "✓ Database connection successful"
 else
     echo "✗ Database connection failed"
@@ -56,7 +56,7 @@ echo ""
 
 # Step 6: Verify tables created
 echo "Step 6: Verifying tables..."
-docker compose exec postgres psql -U manabu_dev -d manabu_dev -c "\dt"
+docker compose exec postgres psql -U wakaru_dev -d wakaru_dev -c "\dt"
 echo ""
 
 # Step 7: Seed database
@@ -68,10 +68,10 @@ echo ""
 # Step 8: Verify seeded data
 echo "Step 8: Verifying seeded data..."
 echo "Kana count:"
-docker compose exec postgres psql -U manabu_dev -d manabu_dev -c "SELECT COUNT(*) FROM kana;"
+docker compose exec postgres psql -U wakaru_dev -d wakaru_dev -c "SELECT COUNT(*) FROM kana;"
 echo ""
 echo "Vocabulary samples:"
-docker compose exec postgres psql -U manabu_dev -d manabu_dev -c "SELECT word, reading, meaning FROM vocabulary LIMIT 3;"
+docker compose exec postgres psql -U wakaru_dev -d wakaru_dev -c "SELECT word, reading, meaning FROM vocabulary LIMIT 3;"
 echo ""
 
 # Step 9: Test Node.js connection

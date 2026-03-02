@@ -1,4 +1,4 @@
-# ManabU - Technical Architecture
+# Wakaru - Technical Architecture
 
 ## System Overview
 
@@ -1482,8 +1482,8 @@ npx prisma migrate deploy
 
 ```bash
 # Clone repo
-git clone https://github.com/yourusername/manabu.git
-cd manabu
+git clone https://github.com/yourusername/wakaru.git
+cd wakaru
 
 # Install dependencies
 npm install
@@ -1515,4 +1515,4 @@ npm run dev
 
 ---
 
-This architecture provides a solid foundation for building ManabU—scalable, maintainable, and user-focused. The tech stack is modern, well-supported, and appropriate for a learning platform with complex data relationships and real-time interactions.
+This architecture provides a solid foundation for building Wakaru—scalable, maintainable, and user-focused. The tech stack is modern, well-supported, and appropriate for a learning platform with complex data relationships and real-time interactions.

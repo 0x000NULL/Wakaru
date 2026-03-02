@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'ManabU - Learn Japanese',
+  title: 'Wakaru — Learn Japanese',
   description:
     'A comprehensive, research-backed Japanese learning platform. From first hiragana to fluency through evidence-based methods.',
 }

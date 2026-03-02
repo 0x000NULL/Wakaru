@@ -1,4 +1,4 @@
-# ManabU - Implementation Plan & Roadmap
+# Wakaru - Implementation Plan & Roadmap
 
 ## Development Philosophy
 
@@ -171,30 +171,30 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [ ] Test vocabulary endpoints
 
 #### Flashcard Review Interface
-- [ ] Create ReviewSession component
-- [ ] Create ReviewCard component (front/back flip)
-- [ ] Implement card reveal interaction
-- [ ] Create rating buttons (Again, Hard, Good, Easy)
-- [ ] Add keyboard shortcuts (1-4 for ratings, Space for reveal)
-- [ ] Display current word with reading and furigana
-- [ ] Show example sentences on card back
-- [ ] Implement progress bar (X cards remaining)
-- [ ] Create reviewStore in Zustand
-- [ ] Add review queue management in store
-- [ ] Fetch due reviews on session start
-- [ ] Submit review and update queue
-- [ ] Show completion message when reviews done
+- [x] Create ReviewSession component
+- [x] Create ReviewCard component (front/back flip)
+- [x] Implement card reveal interaction
+- [x] Create rating buttons (Again, Hard, Good, Easy)
+- [x] Add keyboard shortcuts (1-4 for ratings, Space for reveal)
+- [x] Display current word with reading and furigana
+- [x] Show example sentences on card back
+- [x] Implement progress bar (X cards remaining)
+- [x] Create reviewStore in Zustand
+- [x] Add review queue management in store
+- [x] Fetch due reviews on session start
+- [x] Submit review and update queue
+- [x] Show completion message when reviews done
 - [ ] Display cards studied today count
 
 #### New Word Learning Flow
-- [ ] Create new word learning page
-- [ ] Display new words one at a time
-- [ ] Show word, reading, meaning, and examples
-- [ ] Add "Mark as Learning" button
-- [ ] Configure daily new word limit (default 20)
-- [ ] Add user setting for new word limit
-- [ ] Track new words learned today
-- [ ] Create smooth transition to review mode
+- [x] Create new word learning page
+- [x] Display new words one at a time
+- [x] Show word, reading, meaning, and examples
+- [x] Add "Mark as Learning" button
+- [x] Configure daily new word limit (default 20)
+- [x] Add user setting for new word limit
+- [x] Track new words learned today
+- [x] Create smooth transition to review mode
 
 #### Vocabulary Browsing
 - [ ] Create vocabulary browse page

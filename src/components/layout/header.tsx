@@ -21,8 +21,8 @@ export function Header({ showDashboardNav = false }: HeaderProps) {
     <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="flex h-14 items-center justify-between px-4 lg:px-6">
         <Link href={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2">
-          <span className="text-xl font-bold text-primary">ManabU</span>
-          <span className="hidden text-sm text-muted-foreground sm:inline">学ぶ</span>
+          <span className="text-xl font-bold text-primary">Wakaru</span>
+          <span className="hidden text-sm text-muted-foreground sm:inline">分かる</span>
         </Link>
 
         {/* Desktop nav */}

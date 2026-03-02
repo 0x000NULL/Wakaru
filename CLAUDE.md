@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**ManabU** (学ぶ - "to learn") is a research-backed Japanese learning platform guiding beginners to fluency through comprehensible input, spaced repetition (SRS), and immersion — without gamification. No streaks, badges, XP, or artificial engagement tactics.
+**Wakaru** (分かる - "to understand") is a research-backed Japanese learning platform guiding beginners to fluency through comprehensible input, spaced repetition (SRS), and immersion — without gamification. No streaks, badges, XP, or artificial engagement tactics.
 
 See `plan.md` for the implementation roadmap, `architecture.md` for technical design, and `goal.md` for project vision.
 
@@ -190,7 +190,7 @@ UI components:
 
 ### State Management
 
-Zustand stores in `src/store/`. Auth state uses `persist` middleware (key: `manabu-auth`). Quiz and progress states are ephemeral (no persist). Planned stores: `settingsStore` (user preferences).
+Zustand stores in `src/store/`. Auth state uses `persist` middleware (key: `wakaru-auth`). Quiz and progress states are ephemeral (no persist). Planned stores: `settingsStore` (user preferences).
 
 ## Conventions
 

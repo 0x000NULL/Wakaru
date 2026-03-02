@@ -5,8 +5,8 @@ export default function Home() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <main className="flex max-w-2xl flex-col items-center gap-8 text-center">
         <div>
-          <h1 className="text-5xl font-bold tracking-tight text-foreground">ManabU</h1>
-          <p className="mt-1 text-2xl text-muted-foreground">学ぶ</p>
+          <h1 className="text-5xl font-bold tracking-tight text-foreground">Wakaru</h1>
+          <p className="mt-1 text-2xl text-muted-foreground">分かる</p>
         </div>
 
         <p className="text-lg leading-relaxed text-muted-foreground">

@@ -43,7 +43,7 @@ const SOURCES = {
 async function downloadFile(url: string, destPath: string): Promise<void> {
   console.log(`  Downloading: ${path.basename(destPath)}`)
   const response = await fetch(url, {
-    headers: { 'User-Agent': 'ManabU-vocab-pipeline/1.0' },
+    headers: { 'User-Agent': 'Wakaru-vocab-pipeline/1.0' },
     redirect: 'follow',
   })
 
@@ -64,7 +64,7 @@ async function getJmdictLatestUrl(): Promise<{ url: string }> {
   console.log('  Fetching latest JMdict release info...')
   const res = await fetch(
     'https://api.github.com/repos/scriptin/jmdict-simplified/releases/latest',
-    { headers: { 'User-Agent': 'ManabU-vocab-pipeline/1.0' } }
+    { headers: { 'User-Agent': 'Wakaru-vocab-pipeline/1.0' } }
   )
   if (!res.ok) throw new Error(`GitHub API error: ${res.status}`)
 

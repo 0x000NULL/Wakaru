@@ -49,8 +49,8 @@ export default function ResetPasswordPage() {
     <Card>
       <CardHeader>
         <div className="mb-2 text-center">
-          <span className="text-2xl font-bold text-primary">ManabU</span>
-          <span className="ml-2 text-muted-foreground">学ぶ</span>
+          <span className="text-2xl font-bold text-primary">Wakaru</span>
+          <span className="ml-2 text-muted-foreground">分かる</span>
         </div>
         <CardTitle className="text-center">Reset Password</CardTitle>
       </CardHeader>

@@ -81,7 +81,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'manabu-auth',
+      name: 'wakaru-auth',
       partialize: state => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,

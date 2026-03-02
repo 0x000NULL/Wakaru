@@ -1,4 +1,4 @@
-# ManabU - Project Goals & Vision
+# Wakaru - Project Goals & Vision
 
 ## Vision Statement
 
@@ -219,6 +219,6 @@ The platform succeeds when:
 
 ---
 
-**ManabU** (学ぶ) = "to learn" in Japanese
+**Wakaru** (分かる) = "to understand" in Japanese
 
-This platform exists to help learners truly learn—deeply, effectively, and sustainably.
+This platform exists to help learners truly understand—deeply, effectively, and sustainably.
