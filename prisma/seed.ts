@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
+import { HIRAGANA_CHARACTERS } from '../src/lib/constants/hiragana-data'
 
 const prisma = new PrismaClient()
 
@@ -6,50 +7,40 @@ async function main() {
   console.log('🌱 Starting database seed...')
 
   // ============================================================================
-  // SEED HIRAGANA
+  // SEED HIRAGANA (79 characters with mnemonics, example words, stroke data)
   // ============================================================================
-  const hiraganaData = [
-    // Vowels
-    { character: 'あ', romaji: 'a', type: 'hiragana', group: 'vowel' },
-    { character: 'い', romaji: 'i', type: 'hiragana', group: 'vowel' },
-    { character: 'う', romaji: 'u', type: 'hiragana', group: 'vowel' },
-    { character: 'え', romaji: 'e', type: 'hiragana', group: 'vowel' },
-    { character: 'お', romaji: 'o', type: 'hiragana', group: 'vowel' },
-    // K-row
-    { character: 'か', romaji: 'ka', type: 'hiragana', group: 'k-row' },
-    { character: 'き', romaji: 'ki', type: 'hiragana', group: 'k-row' },
-    { character: 'く', romaji: 'ku', type: 'hiragana', group: 'k-row' },
-    { character: 'け', romaji: 'ke', type: 'hiragana', group: 'k-row' },
-    { character: 'こ', romaji: 'ko', type: 'hiragana', group: 'k-row' },
-    // S-row
-    { character: 'さ', romaji: 'sa', type: 'hiragana', group: 's-row' },
-    { character: 'し', romaji: 'shi', type: 'hiragana', group: 's-row' },
-    { character: 'す', romaji: 'su', type: 'hiragana', group: 's-row' },
-    { character: 'せ', romaji: 'se', type: 'hiragana', group: 's-row' },
-    { character: 'そ', romaji: 'so', type: 'hiragana', group: 's-row' },
-    // T-row
-    { character: 'た', romaji: 'ta', type: 'hiragana', group: 't-row' },
-    { character: 'ち', romaji: 'chi', type: 'hiragana', group: 't-row' },
-    { character: 'つ', romaji: 'tsu', type: 'hiragana', group: 't-row' },
-    { character: 'て', romaji: 'te', type: 'hiragana', group: 't-row' },
-    { character: 'と', romaji: 'to', type: 'hiragana', group: 't-row' },
-    // N-row
-    { character: 'な', romaji: 'na', type: 'hiragana', group: 'n-row' },
-    { character: 'に', romaji: 'ni', type: 'hiragana', group: 'n-row' },
-    { character: 'ぬ', romaji: 'nu', type: 'hiragana', group: 'n-row' },
-    { character: 'ね', romaji: 'ne', type: 'hiragana', group: 'n-row' },
-    { character: 'の', romaji: 'no', type: 'hiragana', group: 'n-row' },
-  ]
-
   console.log('Seeding Hiragana characters...')
-  for (const kana of hiraganaData) {
+  for (const kana of HIRAGANA_CHARACTERS) {
     await prisma.kana.upsert({
       where: { character: kana.character },
-      update: {},
-      create: kana,
+      update: {
+        romaji: kana.romaji,
+        type: kana.type,
+        group: kana.group,
+        display_order: kana.display_order,
+        is_combination: kana.is_combination,
+        stroke_count: kana.stroke_count,
+        mnemonic: kana.mnemonic,
+        stroke_order_svg: kana.stroke_order_svg,
+        audio_url: kana.audio_url,
+        example_words: kana.example_words as unknown as Prisma.InputJsonValue,
+      },
+      create: {
+        character: kana.character,
+        romaji: kana.romaji,
+        type: kana.type,
+        group: kana.group,
+        display_order: kana.display_order,
+        is_combination: kana.is_combination,
+        stroke_count: kana.stroke_count,
+        mnemonic: kana.mnemonic,
+        stroke_order_svg: kana.stroke_order_svg,
+        audio_url: kana.audio_url,
+        example_words: kana.example_words as unknown as Prisma.InputJsonValue,
+      },
     })
   }
-  console.log(`✓ Seeded ${hiraganaData.length} hiragana characters`)
+  console.log(`✓ Seeded ${HIRAGANA_CHARACTERS.length} hiragana characters`)
 
   // ============================================================================
   // SEED SAMPLE VOCABULARY

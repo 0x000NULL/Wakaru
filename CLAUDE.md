@@ -2,393 +2,177 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Status
-
-**Current Phase**: Phase 1A Foundation (Partially Complete)
-- ✅ Next.js 14+ project initialized with TypeScript and Tailwind CSS
-- ✅ Complete database schema defined in Prisma
-- ✅ Project folder structure created
-- ✅ Development environment configured
-- ⏳ Database migration pending (requires Docker Desktop)
-- 🔜 Next: Authentication system implementation
-
-See `plan.md` for detailed implementation roadmap, `architecture.md` for complete technical architecture, and `goal.md` for project vision.
-
 ## Project Overview
 
-**ManabU** (学ぶ - "to learn") is a comprehensive, research-backed Japanese learning platform that guides complete beginners to fluency through evidence-based methodologies, comprehensible input, spaced repetition (SRS), and immersive learning—without gamification.
+**ManabU** (学ぶ - "to learn") is a research-backed Japanese learning platform guiding beginners to fluency through comprehensible input, spaced repetition (SRS), and immersion — without gamification. No streaks, badges, XP, or artificial engagement tactics.
 
-### Core Philosophy
-- **No gamification**: Focus on genuine progress over artificial engagement metrics
-- **Evidence-based**: Every feature grounded in language acquisition research (Krashen, SRS studies, immersion methodologies)
-- **Comprehensive**: From first hiragana character to advanced native media comprehension
-- **Learning stages**: Foundation (0-3 months) → Building Blocks (3-12 months) → Immersion & Expansion (Year 2+)
+See `plan.md` for the implementation roadmap, `architecture.md` for technical design, and `goal.md` for project vision.
 
-## Technology Stack
+## Current Status
 
-### Frontend
-- **Framework**: Next.js 14+ with React 18+ and TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: Zustand (lightweight, modern)
-- **Forms**: React Hook Form + Zod validation
-- **PWA**: next-pwa for offline support
+Phase 1A (Foundation), Phase 1B (Hiragana Data), Phase 1C (Hiragana Learning Interface), and Hiragana Practice Modes are complete. The project has 14 Prisma models, full JWT auth system, basic UI components, responsive navigation, Zustand stores (auth + quiz), auth pages, dashboard layout, the complete hiragana data layer (79 characters with mnemonics, example words, stroke order SVGs, special rules, and utility functions), the full hiragana learning interface (course overview, group lessons with keyboard navigation, and special rules page), and 4 quiz modes (recognition, typing, audio, mixed) with session-based scoring.
 
-### Backend
-- **Runtime**: Node.js 20+ LTS
-- **API**: Next.js API Routes (serverless functions)
-- **ORM**: Prisma with PostgreSQL 15+
-- **Authentication**: NextAuth.js or custom JWT implementation
-- **Validation**: Zod for type-safe schema validation
+## Commands
 
-### Database
-- **PostgreSQL 15+** (Managed service: Supabase, Railway, or AWS RDS)
-- **Connection Pooling**: PgBouncer for serverless environments
-- **Migrations**: Prisma Migrate
+```bash
+# Development
+npm run dev                                    # Start dev server
+npm run build                                  # Production build
+npm run lint                                   # ESLint
+npm run format                                 # Prettier (writes files)
+npx tsc --noEmit                               # Type check
 
-### Infrastructure
-- **Hosting**: Vercel or Railway
-- **File Storage**: AWS S3, Cloudflare R2, or Supabase Storage (subtitles, audio, images)
-- **CDN**: Cloudflare
-- **Monitoring**: Sentry for error tracking
-- **Email**: Resend or SendGrid
+# Testing (Vitest)
+npm test                                       # Watch mode
+npm run test:run                               # Single run (CI)
+npx vitest run src/lib/utils/__tests__/        # Run specific test directory
+npx vitest run src/lib/utils/__tests__/jwt     # Run tests matching pattern
 
-## Project Structure
-
-```
-src/
-├── app/                      # Next.js App Router
-│   ├── (auth)/              # Auth layout group (login, register, reset-password)
-│   ├── (dashboard)/         # Main app (dashboard, vocabulary, kanji, grammar, immersion, settings)
-│   ├── api/v1/              # API routes
-│   ├── layout.tsx
-│   └── page.tsx
-├── components/
-│   ├── ui/                  # Reusable UI components
-│   ├── features/            # Feature-specific (srs, media, kana)
-│   └── layout/              # Header, Sidebar, Footer
-├── lib/
-│   ├── api/                 # API client functions
-│   ├── utils/               # Utilities (srs-algorithm, furigana, jmdict-parser)
-│   └── hooks/               # Custom React hooks
-├── store/                   # Zustand state management
-├── types/                   # TypeScript type definitions
-└── styles/
+# Database (requires Docker: docker compose up -d postgres)
+npx prisma migrate dev --name <name>           # Create + apply migration
+npx prisma generate                            # Regenerate client after schema changes
+npx prisma db seed                             # Seed sample data
+npx prisma studio                              # Visual database browser
+npx prisma migrate reset                       # Reset DB (destructive)
 ```
 
-## Key System Components
+## Tech Stack
 
-### 1. Database Schema
+- **Next.js 16.1.6** (App Router) / **React 19** / **TypeScript 5**
+- **Tailwind CSS 4** / **Zustand 5** (state) / **React Hook Form** + **Zod 4** (validation)
+- **Prisma 5.22** with **PostgreSQL 15** (Docker)
+- **jsonwebtoken** (JWT) / **bcryptjs** (password hashing, cost 12)
+- **Vitest 4** + **Testing Library** (testing)
 
-**Location**: `prisma/schema.prisma`
+## Architecture
 
-The complete schema is already defined with 13 models representing the entire application data structure. The schema uses:
-- **CUID** for primary keys (`@default(cuid())`)
-- **JSONB** for flexible data (tags, settings, array fields)
-- **Cascading deletes** to maintain referential integrity
-- **Strategic indexes** on frequently queried fields
+### Database Access
 
-**Core Tables**:
-- `users`: User accounts with settings JSONB column
-- `user_progress`: SRS tracking (category, item_id, intervals, ease_factor, next_review_at)
-- `vocabulary`: 3000+ core words (word, reading, meaning, JLPT level, frequency_rank, tags JSONB)
-- `example_sentences`: Japanese-English sentence pairs
-- `kanji`: 2136 Jōyō kanji with radicals, readings, mnemonics, stroke order SVG
-- `grammar_patterns`: Grammar explanations with JLPT levels
-- `media_content` + `media_episodes`: Anime/drama library with subtitle URLs
-- `mined_sentences`: User's personal sentence collection from immersion
-- `kana`: Hiragana/katakana reference table
-
-**Critical Indexes** (already defined in schema):
-- `user_progress`: `[user_id, next_review_at]` - SRS due review queries
-- `user_progress`: `[user_id, category]` - Progress filtering
-- `vocabulary`: `[frequency_rank]` - Sorting by frequency
-- `vocabulary`: `[jlpt_level]` - JLPT level filtering
-- `kanji`: `[jlpt_level]`, `[frequency_rank]`, `[grade]` - Multiple access patterns
-- `kana`: `[type]`, `[group]` - Character lookups
-
-**Database Seeding**: Sample data includes 25 hiragana characters, 5 vocabulary words, and 3 grammar patterns. See `prisma/seed.ts`.
-
-See `architecture.md` for complete schema definitions and detailed explanations.
-
-### 2. Prisma Client Singleton
-
-**Location**: `src/lib/db.ts`
-
-The Prisma client is exported as a singleton to prevent connection issues in development (Next.js hot reload). Always import from this file:
+Always import the Prisma singleton — never instantiate `new PrismaClient()` elsewhere:
 
 ```typescript
 import prisma from '@/lib/db'
-
-// Use in API routes, server components, server actions
-const users = await prisma.user.findMany()
 ```
 
-**Critical**: Never instantiate `new PrismaClient()` directly elsewhere in the codebase.
+### Authentication Flow
 
-### 3. SRS Algorithm (Modified SM-2)
+JWT-based auth with HTTP-only cookies (`access_token` 7d, `refresh_token` 30d). Key files:
 
-Will be located in `src/lib/utils/srs-algorithm.ts` (not yet implemented):
+| Layer | File | Purpose |
+|-------|------|---------|
+| Middleware | `src/middleware.ts` | Protects `/dashboard/*` and `/hiragana/*`, redirects authed users from auth pages |
+| Auth helper | `src/lib/auth.ts` | `getAuthUser()` — reads cookie, verifies JWT, fetches user |
+| JWT | `src/lib/utils/jwt.ts` | `signAccessToken`, `signRefreshToken`, `verifyAccessToken`, `verifyRefreshToken` |
+| Cookies | `src/lib/utils/cookies.ts` | `setAuthCookies`, `clearAuthCookies` (HTTP-only, Secure, SameSite=Strict) |
+| Password | `src/lib/utils/password.ts` | `hashPassword`, `verifyPassword` (bcrypt, cost 12) |
+| Rate limit | `src/lib/utils/rate-limit.ts` | In-memory rate limiter per IP |
+| Validation | `src/lib/validations/auth.ts` | Zod schemas: `registerSchema`, `loginSchema`, `forgotPasswordSchema`, `resetPasswordSchema` |
+| Store | `src/store/auth-store.ts` | Zustand store with `persist` middleware (localStorage) |
+| Email | `src/lib/utils/email.ts` | `sendPasswordResetEmail` — console.log stub, swap for Resend/SendGrid |
 
-**Core Logic**:
-- Intervals: 1d → 6d → ~2w → ~1m → ~2m → ~4m → ~8m (adjusted by ease factor)
-- Ratings: 'again' (reset), 'hard' (0.8x interval), 'good' (1x interval), 'easy' (1.3x interval)
-- Ease factor: Starts at 2.5, adjusted based on performance (minimum 1.3)
-- Mastery threshold: interval >= 30 days
+### API Response Pattern
 
-**Key Functions**:
-- `calculateNextReview(card, rating)`: Returns updated SRSCard
-- `getNextReviewDate(interval)`: Converts interval to Date (normalized to 4 AM)
+All API routes use helpers from `src/lib/utils/api-response.ts`:
 
-See `architecture.md` for complete implementation with TypeScript code.
-
-### 4. API Structure
-
-**Note**: API routes not yet implemented. Will be located in `src/app/api/v1/`.
-
-**Authentication**: JWT with HTTP-only cookies, bcrypt password hashing
-
-**Planned Endpoints** (all under `/api/v1/`):
-- `auth/*`: register, login, logout, refresh, forgot-password, reset-password
-- `user/profile`, `user/stats`: User data and progress statistics
-- `vocabulary`, `vocabulary/:id`, `vocabulary/search`: Vocabulary management
-- `srs/due`, `srs/review`, `srs/new`, `srs/learn`: SRS review system
-- `kanji`, `kanji/:character`: Kanji learning
-- `grammar`, `grammar/:id`: Grammar patterns
-- `media`, `media/:id`, `media/:mediaId/episodes/:episodeId`: Immersion content
-- `sentences/mine`: Sentence mining from media
-
-**Response Format**:
 ```typescript
-Success: { success: true, data: {...}, meta?: { total, limit, offset, hasMore } }
-Error: { success: false, error: { code, message, details? } }
+// Success responses
+return successResponse(data)          // 200
+return createdResponse(data)          // 201
+
+// Error responses
+return validationError(message, details)  // 400
+return unauthorizedError()                // 401
+return notFoundError()                    // 404
+return rateLimitError()                   // 429
+return serverError()                      // 500
 ```
 
-See `architecture.md` for complete endpoint specifications.
+Response shape: `{ success: true, data, meta? }` or `{ success: false, error: { code, message, details? } }`
 
-### 5. Interactive Media Player
+### API Route Pattern
 
-**Note**: Not yet implemented. Planned for Phase 1E.
+Routes live under `src/app/api/v1/`. Each route validates input with Zod, checks rate limits on public endpoints, uses Prisma `select` to return only needed fields, and wraps everything in try-catch with `serverError()` fallback.
 
-**Core Features**:
-- Dual subtitles (Japanese with furigana + English)
-- Click-to-lookup dictionary on any word
-- Sentence mining: save sentence + audio clip + screenshot + timestamp
-- Playback controls: replay subtitle, slow speed, loop for shadowing
+### Route Groups
 
-**Implementation**: Video.js or similar, subtitle parsing (.srt/.ass), dictionary API (JMdict)
+- `src/app/(auth)/` — Login, register, reset-password pages (shared centered auth layout)
+- `src/app/(dashboard)/` — Protected app pages (Header + Sidebar layout)
 
-### 6. PWA Offline Support
+### UI Components
 
-**Note**: Not yet implemented. Planned for Phase 2.
+Components in `src/components/ui/` follow a consistent pattern: `'use client'`, named exports, `cn()` for class merging, variant props (e.g., `variant`, `size`). Sub-components (CardHeader, ModalBody, etc.) are simple functions, not forwardRef.
 
-**Planned Caching Strategy**:
-- Static assets: Cache-first
-- Content API (vocabulary/kanji/grammar): NetworkFirst with 1-week cache
-- SRS API: NetworkOnly with background sync queue
-- Offline reviews queued in IndexedDB and synced when online
+Navigation items are shared via `src/lib/constants/navigation.ts` — both Sidebar (desktop) and Header (mobile menu) import `dashboardNavItems` from there.
 
-## Development Commands
+### Testing
 
-### First-Time Setup (Docker Required)
+Two test environments coexist:
+- **Node** (default): API route and utility tests (`*.test.ts`)
+- **jsdom** (per-file): Component tests (`*.test.tsx`) opt in with `// @vitest-environment jsdom` at the top of the file
 
-The database requires Docker Desktop to be installed and running.
+Integration tests for auth routes mock `next/headers` (via `vi.mock`) since `cookies()` requires the Next.js request scope. Component tests mock `next/navigation` and `next/link`. Test files follow the `__tests__/` directory convention.
 
-```bash
-# 1. Start PostgreSQL container
-docker compose up -d postgres
+Setup file `src/test-setup.ts` imports `@testing-library/jest-dom/vitest` for DOM matchers.
 
-# 2. Verify database is running
-docker compose ps
-docker compose logs postgres
+### Hiragana Learning Interface
 
-# 3. Generate initial migration and apply to database
-npx prisma migrate dev --name init
+Routes under `src/app/(dashboard)/hiragana/`:
 
-# 4. Seed database with sample data (hiragana, vocabulary, grammar)
-npx prisma db seed
+| Route | File | Purpose |
+|-------|------|---------|
+| `/hiragana` | `page.tsx` | Course overview — all 14 groups in 3 sections (Basic, Voiced, Combinations) |
+| `/hiragana/[groupId]` | `[groupId]/page.tsx` | Group lesson — characters one at a time with keyboard navigation (ArrowLeft/ArrowRight) |
+| `/hiragana/practice` | `practice/page.tsx` | Quiz practice — 4 modes (recognition, typing, audio, mixed) with setup/active/results phases |
+| `/hiragana/rules` | `rules/page.tsx` | 5 special rules (long vowels, particles, confused pairs, etc.) |
 
-# 5. Test database connection
-npx tsx src/lib/__test-db.ts
+Feature components live in `src/components/hiragana/`. The group lesson page uses local `useState` for character index — no Zustand store needed. All data is static TypeScript constants (no API calls). To add a new protected route, add it to both `PROTECTED_ROUTES` in `src/middleware.ts` and `config.matcher`.
 
-# 6. Start development server
-npm run dev
-```
+### Hiragana Data Layer
 
-### Daily Development
+Static educational content lives as TypeScript constants in `src/lib/constants/`, importable by both UI and seed script:
 
-```bash
-# Start dev server (hot reload enabled)
-npm run dev
+| File | Exports | Purpose |
+|------|---------|---------|
+| `hiragana-data.ts` | `HIRAGANA_CHARACTERS` (79 entries) | Full character data: character, romaji, group, display_order, stroke_count, mnemonic, example_words |
+| `hiragana-groups.ts` | `HIRAGANA_GROUPS` (14 entries) | Group metadata: id, name, description, character_count, is_dakuten, is_combination |
+| `hiragana-rules.ts` | `HIRAGANA_RULES` (5 entries) | Special rules: long vowels, spelling rules, small tsu, particle exceptions, confused pairs |
 
-# Open Prisma Studio (visual database browser)
-npx prisma studio
-```
+Types for kana data are in `src/types/kana.ts` (`KanaCharacter`, `KanaGroup`, `KanaExampleWord`, `HiraganaRule`).
 
-### Database Operations
+Utilities in `src/lib/utils/kana.ts`:
+- `getStrokeOrderSvgPath(character)` — derives path from Unicode codepoint: `/svg/kana/{codepoint}.svg`
+- `speakKana(text, rate)` — Web Speech API TTS with `ja-JP` voice (MVP audio, no files needed)
+- `getGroupById(groupId)` / `getCharactersByGroup(characters, groupId)` — data lookup helpers
 
-```bash
-# Generate Prisma Client after schema changes
-npx prisma generate
+Stroke order SVGs live in `public/svg/kana/` (71 files from [animCJK](https://github.com/parsimonhi/animCJK), LGPL). Download with `bash scripts/download-kana-svg.sh`.
 
-# Create new migration (auto-applies in dev)
-npx prisma migrate dev --name <migration_name>
+The seed script (`prisma/seed.ts`) imports `HIRAGANA_CHARACTERS` and upserts all 79 characters, so the constants file is the single source of truth.
 
-# Apply pending migrations (production)
-npx prisma migrate deploy
+### Hiragana Practice System
 
-# Reset database (WARNING: deletes all data)
-npx prisma migrate reset
+Quiz engine (`src/lib/utils/quiz-engine.ts`) is pure functions with no framework dependencies — generates questions, validates answers, calculates stats. Key concepts:
 
-# Seed database with sample data
-npx prisma db seed
-```
+- **Recognition**: shows character, pick correct romaji from 4 options (keyboard 1-4)
+- **Typing**: shows romaji, pick character from a grouped grid (`CharacterPicker`)
+- **Audio**: auto-plays sound via `speakKana`, pick character from 4 options (keyboard 1-4, Space to replay)
+- **Mixed**: round-robin distribution of all 3 types
 
-### Docker Commands
+Quiz store (`src/store/quiz-store.ts`) manages session lifecycle: `setup → active → results`. Ephemeral (no `persist`). Supports "Practice Again" (same config), "Practice Missed" (only missed characters), and "Change Settings" (back to setup).
 
-```bash
-# Start PostgreSQL
-docker compose up -d postgres
+Types in `src/types/quiz.ts`: `QuizMode`, `QuizPhase`, `QuestionType`, `QuizQuestion`, `QuizAnswer`, `QuizSessionConfig`, `QuizSessionStats`.
 
-# Stop PostgreSQL (preserves data)
-docker compose stop postgres
+### State Management
 
-# Stop and remove containers (preserves data in volume)
-docker compose down
+Zustand stores in `src/store/`. Auth state uses `persist` middleware (key: `manabu-auth`). Quiz state is ephemeral (no persist). Planned stores: `reviewStore` (SRS session), `settingsStore` (user preferences).
 
-# View PostgreSQL logs
-docker compose logs -f postgres
+## Conventions
 
-# Access PostgreSQL CLI
-docker compose exec postgres psql -U manabu_dev -d manabu_dev
-```
-
-### Code Quality
-
-```bash
-# Lint code
-npm run lint
-
-# Format all code with Prettier
-npm run format
-
-# Check formatting without modifying files
-npm run format:check
-
-# Type check (no output = success)
-npx tsc --noEmit
-```
-
-### Build & Deployment
-
-```bash
-# Build for production
-npm run build
-
-# Start production server (after build)
-npm run start
-
-# Test production build locally
-npm run build && npm run start
-```
-
-## Development Principles
-
-### Database Migrations
-- **Never drop columns** in production (deprecate instead for backward compatibility)
-- Test all migrations on staging first
-- Automated backups before production migrations
-
-### API Design
-- All inputs validated with Zod schemas
-- Use Prisma ORM for SQL injection prevention
-- Implement rate limiting on auth endpoints
-- Paginate large lists (cursor or offset pagination)
-
-### Frontend Performance
-- Use React.memo for expensive renders (especially SRS review cards)
-- Lazy load heavy components (video player, large lists)
-- Virtual lists (react-window) for vocabulary/kanji browsing
-- Next.js Image component for optimized images
-
-### Security
-- Passwords: bcrypt with cost factor 12
-- JWT tokens expire after 7 days, refresh tokens after 30 days
-- HTTP-only, Secure, SameSite=Strict cookies
-- CSRF protection (Next.js built-in)
-- Content Security Policy headers
-
-### State Management (Zustand)
-- `authStore`: User authentication state
-- `reviewStore`: SRS review session state and queue
-- `settingsStore`: User preferences
-- Use `persist` middleware for auth state only
-
-## Content Strategy
-
-### Vocabulary Sources
-1. **JMdict** (primary dictionary)
-2. **Tatoeba** (example sentences - requires quality filtering)
-3. **BCCWJ** frequency lists (for prioritization)
-4. Manual curation for gaps and quality control
-
-### Media Library
-- **Do not host copyrighted video** - use curated links to legal streaming services
-- Subtitle sources: Kitsunekko, community contributions (moderated), manual creation
-- Metadata: difficulty level, JLPT level, genre tags, vocabulary coverage percentage
-
-### Learning Progression
-- **Stage 1 (0-3 months)**: Hiragana/Katakana → 500-1000 words → Basic grammar (N5) → Optional kanji introduction
-- **Stage 2 (3-12 months)**: 2000-3000 words → 300-500 kanji → N4-N5 grammar → Graded immersion content
-- **Stage 3 (Year 2+)**: 5000-10,000+ words → 1000-2000+ kanji → N3-N1 grammar → Native content immersion
-
-## Implementation Phases
-
-See `plan.md` for detailed task breakdowns. High-level phases:
-
-**Phase 1: MVP (Minimum Viable Product)**
-1. **Phase 1A - Foundation**: Project setup, auth system, basic UI
-2. **Phase 1B - First Learning Module**: Hiragana curriculum and practice
-3. **Phase 1C - Vocabulary System**: SRS algorithm, flashcard reviews, 3000 words
-4. **Phase 1D - Expansion**: Katakana, basic grammar (N5-N4)
-5. **Phase 1E - Immersion Tools**: Video player, subtitles, sentence mining
-6. **Phase 1F - Polish**: Dashboard, mobile optimization, performance, launch prep
-
-**Phase 2: Version 1.0**
-- Full kanji curriculum (2000+ characters)
-- Advanced grammar (N3-N1)
-- Expanded media library (50+ titles)
-- JLPT preparation modules
-- Offline PWA functionality
-
-**Phase 3: Version 2.0+**
-- Community features
-- Reading library
-- Writing/speaking practice
-- Advanced AI features
-
-## Anti-Patterns to Avoid
-
-- **No gamification**: No streaks, badges, XP, or artificial engagement tactics
-- **No data selling**: User data used solely for learning optimization
-- **No artificial scarcity**: Don't gate content unnecessarily
-- **No time estimates**: Focus on what needs to be done, not when
-
-## Success Metrics
-
-**Learning Outcomes** (Primary):
-- 50%+ user retention at 3 months, 30%+ at 6 months
-- Users reaching 1000-word milestone within 4-6 months
-- 80%+ daily SRS review completion rate
-- JLPT pass rates above population average
-
-**Platform Health** (Secondary):
-- 95%+ uptime
-- <3s average page load time
-- <5% API error rate
-- Positive NPS score (>30)
-
-## Additional Documentation
-
-- **architecture.md**: Complete technical architecture with detailed schemas, code examples, and implementation patterns
-- **plan.md**: Detailed implementation roadmap with all tasks broken down by phase
-- **goal.md**: Project vision, user personas, learning objectives, and long-term goals
+- **Imports**: Always use `@/` path alias, never relative paths
+- **Prettier**: No semicolons, single quotes, trailing comma es5, 100 char width, avoid arrow parens
+- **Database columns**: snake_case in Prisma/SQL (e.g., `password_hash`, `created_at`)
+- **IDs**: CUID via `@default(cuid())`
+- **Flexible fields**: JSONB for tags, settings, array-like data
+- **Component files**: UI primitives in `src/components/ui/`, layout in `src/components/layout/`, feature components in `src/components/{feature}/` (e.g., `src/components/hiragana/`)
+- **Utility files**: kebab-case in `src/lib/utils/` (e.g., `rate-limit.ts`, `api-response.ts`)
+- **Constants files**: Static data in `src/lib/constants/` — importable by both app code and `prisma/seed.ts`
+- **Type files**: Shared interfaces in `src/types/` (e.g., `kana.ts`, `auth.ts`, `api.ts`)

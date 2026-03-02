@@ -1,0 +1,138 @@
+import type { KanaGroup } from '@/types/kana'
+
+export const HIRAGANA_GROUPS: KanaGroup[] = [
+  {
+    id: 'vowel',
+    name: 'Vowels',
+    display_order: 1,
+    description: 'The five foundational vowel sounds: a, i, u, e, o',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'k-row',
+    name: 'K Row',
+    display_order: 2,
+    description: 'Consonant K combined with each vowel: ka, ki, ku, ke, ko',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 's-row',
+    name: 'S Row',
+    display_order: 3,
+    description:
+      'Consonant S combined with each vowel: sa, shi, su, se, so. Note: si becomes "shi"',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 't-row',
+    name: 'T Row',
+    display_order: 4,
+    description:
+      'Consonant T combined with each vowel: ta, chi, tsu, te, to. Note: ti becomes "chi" and tu becomes "tsu"',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'n-row',
+    name: 'N Row',
+    display_order: 5,
+    description: 'Consonant N combined with each vowel: na, ni, nu, ne, no',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'h-row',
+    name: 'H Row',
+    display_order: 6,
+    description: 'Consonant H combined with each vowel: ha, hi, fu, he, ho. Note: hu becomes "fu"',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'm-row',
+    name: 'M Row',
+    display_order: 7,
+    description: 'Consonant M combined with each vowel: ma, mi, mu, me, mo',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'y-row',
+    name: 'Y Row',
+    display_order: 8,
+    description: 'Consonant Y with three vowels: ya, yu, yo',
+    character_count: 3,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'r-row',
+    name: 'R Row',
+    display_order: 9,
+    description:
+      'Consonant R combined with each vowel: ra, ri, ru, re, ro. The Japanese R is a light tap, between English L and R',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'w-row',
+    name: 'W Row + N',
+    display_order: 10,
+    description:
+      'The W consonant (wa, wo) plus the standalone nasal N (ん). Wo (を) is primarily used as the object particle',
+    character_count: 3,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'g-z-row',
+    name: 'G & Z Rows (Dakuten)',
+    display_order: 11,
+    description:
+      'Voiced versions of K and S rows using dakuten (゛): ga, gi, gu, ge, go, za, ji, zu, ze, zo',
+    character_count: 10,
+    is_dakuten: true,
+    is_combination: false,
+  },
+  {
+    id: 'd-b-row',
+    name: 'D & B Rows (Dakuten)',
+    display_order: 12,
+    description:
+      'Voiced versions of T and H rows using dakuten (゛): da, di, du, de, do, ba, bi, bu, be, bo',
+    character_count: 10,
+    is_dakuten: true,
+    is_combination: false,
+  },
+  {
+    id: 'p-row',
+    name: 'P Row (Handakuten)',
+    display_order: 13,
+    description:
+      'H row modified with handakuten (゜) to create P sounds: pa, pi, pu, pe, po',
+    character_count: 5,
+    is_dakuten: false,
+    is_combination: false,
+  },
+  {
+    id: 'yoon',
+    name: 'Yoon (Combinations)',
+    display_order: 14,
+    description:
+      'Combination characters using a consonant + small ya/yu/yo. Essential combos: kya, kyu, kyo, sha, shu, sho, cha, chu',
+    character_count: 8,
+    is_dakuten: false,
+    is_combination: true,
+  },
+]

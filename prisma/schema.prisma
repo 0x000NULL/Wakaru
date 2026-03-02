@@ -24,8 +24,28 @@ model User {
   progress          UserProgress[]
   minedSentences    MinedSentence[]
   mediaProgress     UserMediaProgress[]
+  resetTokens       PasswordResetToken[]
 
   @@map("users")
+}
+
+// ============================================================================
+// PASSWORD RESET TOKENS
+// ============================================================================
+
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  user_id    String
+  token      String   @unique
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([user_id])
+  @@map("password_reset_tokens")
 }
 
 // ============================================================================
@@ -156,14 +176,18 @@ model Kana {
   romaji            String
   type              String    // 'hiragana' or 'katakana'
   group             String    // 'vowel', 'k-row', 's-row', etc.
+  display_order     Int       @default(0)
   is_combination    Boolean   @default(false)
+  stroke_count      Int       @default(1)
 
   mnemonic          String?   @db.Text
   stroke_order_svg  String?   @db.Text
   audio_url         String?
+  example_words     Json      @default("[]")
 
   @@index([type])
   @@index([group])
+  @@index([type, display_order])
   @@map("kana")
 }
 

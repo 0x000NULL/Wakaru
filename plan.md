@@ -32,75 +32,75 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Install and configure Prisma ORM
 - [x] Design complete database schema (all tables)
 - [x] Create Prisma schema file with all models
-- [ ] Generate initial migration (requires Docker Desktop to be installed and running)
+- [x] Generate initial migration
 - [x] Create database seed script with sample data
-- [ ] Test database connection and migrations (requires Docker Desktop to be installed and running)
+- [x] Test database connection and migrations
 
 #### Authentication System
-- [ ] Design JWT authentication flow
-- [ ] Create users table schema
-- [ ] Implement user registration endpoint (`/api/v1/auth/register`)
-- [ ] Implement password hashing with bcrypt (cost factor 12)
-- [ ] Implement login endpoint (`/api/v1/auth/login`)
-- [ ] Implement JWT token generation and validation
-- [ ] Set up HTTP-only cookie management
-- [ ] Implement logout endpoint (`/api/v1/auth/logout`)
-- [ ] Create password reset request endpoint
-- [ ] Create password reset confirmation endpoint
-- [ ] Implement token refresh endpoint
-- [ ] Add rate limiting to auth endpoints (5 attempts/15 min)
-- [ ] Create authentication middleware for protected routes
-- [ ] Test complete auth flow end-to-end
+- [x] Design JWT authentication flow
+- [x] Create users table schema
+- [x] Implement user registration endpoint (`/api/v1/auth/register`)
+- [x] Implement password hashing with bcrypt (cost factor 12)
+- [x] Implement login endpoint (`/api/v1/auth/login`)
+- [x] Implement JWT token generation and validation
+- [x] Set up HTTP-only cookie management
+- [x] Implement logout endpoint (`/api/v1/auth/logout`)
+- [x] Create password reset request endpoint
+- [x] Create password reset confirmation endpoint
+- [x] Implement token refresh endpoint
+- [x] Add rate limiting to auth endpoints (5 attempts/15 min)
+- [x] Create authentication middleware for protected routes
+- [x] Test complete auth flow end-to-end
 
 #### Basic UI Components
-- [ ] Create root layout component
-- [ ] Design and implement Header component
-- [ ] Design and implement Sidebar/Navigation component
-- [ ] Create reusable Button component
-- [ ] Create reusable Input component
-- [ ] Create reusable Card component
-- [ ] Create Modal/Dialog component
-- [ ] Create Loading spinner component
-- [ ] Implement responsive layout (mobile, tablet, desktop)
-- [ ] Set up Zustand for state management
-- [ ] Create authStore with login/logout actions
-- [ ] Create registration page UI
-- [ ] Create login page UI
-- [ ] Create password reset page UI
-- [ ] Test responsive design on multiple devices
+- [x] Create root layout component
+- [x] Design and implement Header component
+- [x] Design and implement Sidebar/Navigation component
+- [x] Create reusable Button component
+- [x] Create reusable Input component
+- [x] Create reusable Card component
+- [x] Create Modal/Dialog component
+- [x] Create Loading spinner component
+- [x] Implement responsive layout (mobile, tablet, desktop)
+- [x] Set up Zustand for state management
+- [x] Create authStore with login/logout actions
+- [x] Create registration page UI
+- [x] Create login page UI
+- [x] Create password reset page UI
+- [x] Test responsive design on multiple devices
 
 ---
 
 ### Phase 1B: First Learning Module (Hiragana)
 
 #### Hiragana Data & Content
-- [ ] Create kana table in database
-- [ ] Populate hiragana characters (46 base + 33 combinations)
-- [ ] Organize hiragana into 14 learning groups
-- [ ] Source/create stroke order SVG animations for each character
-- [ ] Record or source native audio for each character
-- [ ] Write mnemonic aids for each character
-- [ ] Find/create example words using each character
-- [ ] Create special rules content (long vowels, small tsu)
+- [x] Create kana table in database
+- [x] Populate hiragana characters (46 base + 33 combinations)
+- [x] Organize hiragana into 14 learning groups
+- [x] Source/create stroke order SVG animations for each character
+- [x] Record or source native audio for each character
+- [x] Write mnemonic aids for each character
+- [x] Find/create example words using each character
+- [x] Create special rules content (long vowels, small tsu)
 
 #### Hiragana Learning Interface
-- [ ] Create hiragana course overview page
-- [ ] Design character lesson card component
-- [ ] Implement stroke order animation display
-- [ ] Add audio playback for character pronunciation
-- [ ] Display mnemonic aids in lesson view
-- [ ] Show example words for each character
-- [ ] Create lesson navigation (previous/next character)
-- [ ] Implement group-based lesson progression
+- [x] Create hiragana course overview page
+- [x] Design character lesson card component
+- [x] Implement stroke order animation display
+- [x] Add audio playback for character pronunciation
+- [x] Display mnemonic aids in lesson view
+- [x] Show example words for each character
+- [x] Create lesson navigation (previous/next character)
+- [x] Implement group-based lesson progression
 
 #### Hiragana Practice Modes
-- [ ] Create recognition quiz component (character → romaji)
-- [ ] Create typing test component (romaji → hiragana)
-- [ ] Implement character picker input method
-- [ ] Create audio quiz component (sound → character selection)
-- [ ] Create mixed review mode (random selection)
-- [ ] Add quiz result feedback UI
-- [ ] Implement quiz scoring and accuracy tracking
+- [x] Create recognition quiz component (character → romaji)
+- [x] Create typing test component (romaji → hiragana)
+- [x] Implement character picker input method
+- [x] Create audio quiz component (sound → character selection)
+- [x] Create mixed review mode (random selection)
+- [x] Add quiz result feedback UI
+- [x] Implement quiz scoring and accuracy tracking
 
 #### Hiragana Progress Tracking
 - [ ] Create user_progress table entries for hiragana
