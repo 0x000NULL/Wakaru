@@ -141,33 +141,33 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Create vocabulary seeding script
 
 #### SRS Algorithm Implementation
-- [ ] Create `lib/utils/srs-algorithm.ts` file
-- [ ] Implement `calculateNextReview()` function (Modified SM-2)
-- [ ] Implement `getNextReviewDate()` function
-- [ ] Define SRSCard TypeScript interface
-- [ ] Define Rating type ('again' | 'hard' | 'good' | 'easy')
-- [ ] Test SRS algorithm with various scenarios
-- [ ] Implement ease factor calculation (min 1.3)
-- [ ] Implement interval progression logic
-- [ ] Set review time normalization (4 AM reset)
+- [x] Create `lib/utils/srs-algorithm.ts` file
+- [x] Implement `calculateNextReview()` function (Modified SM-2)
+- [x] Implement `getNextReviewDate()` function
+- [x] Define SRSCard TypeScript interface
+- [x] Define Rating type ('again' | 'hard' | 'good' | 'easy')
+- [x] Test SRS algorithm with various scenarios
+- [x] Implement ease factor calculation (min 1.3)
+- [x] Implement interval progression logic
+- [x] Set review time normalization (4 AM reset)
 
 #### SRS API Endpoints
-- [ ] Create `/api/v1/srs/due` endpoint (get due reviews)
-- [ ] Create `/api/v1/srs/review` endpoint (submit review rating)
-- [ ] Create `/api/v1/srs/new` endpoint (get new items to learn)
-- [ ] Create `/api/v1/srs/learn` endpoint (mark item as started)
-- [ ] Implement user progress query optimization
-- [ ] Add indexes for next_review_at queries
+- [x] Create `/api/v1/srs/due` endpoint (get due reviews)
+- [x] Create `/api/v1/srs/review` endpoint (submit review rating)
+- [x] Create `/api/v1/srs/new` endpoint (get new items to learn)
+- [x] Create `/api/v1/srs/learn` endpoint (mark item as started)
+- [x] Implement user progress query optimization
+- [x] Add indexes for next_review_at queries
 - [ ] Test API endpoints with sample data
-- [ ] Add input validation with Zod schemas
+- [x] Add input validation with Zod schemas
 
 #### Vocabulary API Endpoints
-- [ ] Create `/api/v1/vocabulary` endpoint (list with pagination)
-- [ ] Create `/api/v1/vocabulary/:id` endpoint (get single word)
-- [ ] Create `/api/v1/vocabulary/search` endpoint (search by word/meaning)
-- [ ] Add JLPT level filtering
-- [ ] Add tag-based filtering
-- [ ] Implement pagination (limit/offset)
+- [x] Create `/api/v1/vocabulary` endpoint (list with pagination)
+- [x] Create `/api/v1/vocabulary/:id` endpoint (get single word)
+- [x] Create `/api/v1/vocabulary/search` endpoint (search by word/meaning)
+- [x] Add JLPT level filtering
+- [x] Add frequency tier filtering
+- [x] Implement pagination (limit/offset)
 - [ ] Test vocabulary endpoints
 
 #### Flashcard Review Interface
