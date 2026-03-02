@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# vocab pipeline cache
+scripts/vocab-pipeline/.cache/

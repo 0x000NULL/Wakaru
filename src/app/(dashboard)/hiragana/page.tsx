@@ -3,6 +3,8 @@ import { HIRAGANA_GROUPS } from '@/lib/constants/hiragana-groups'
 import { HIRAGANA_CHARACTERS } from '@/lib/constants/hiragana-data'
 import { getCharactersByGroup } from '@/lib/utils/kana'
 import { GroupCard } from '@/components/hiragana/group-card'
+import { ProgressOverview, GroupProgressBadge } from '@/components/hiragana/progress-overview'
+import { AchievementList } from '@/components/hiragana/achievement-list'
 
 const sortedGroups = [...HIRAGANA_GROUPS].sort((a, b) => a.display_order - b.display_order)
 
@@ -20,6 +22,8 @@ export default function HiraganaOverviewPage() {
           mnemonics.
         </p>
       </div>
+
+      <ProgressOverview />
 
       <Link href="/hiragana/practice">
         <div className="rounded-lg border border-border bg-background p-5 shadow-sm transition-colors hover:border-primary/40 hover:bg-muted/30">
@@ -55,6 +59,9 @@ export default function HiraganaOverviewPage() {
               key={group.id}
               group={group}
               characters={getCharactersByGroup(HIRAGANA_CHARACTERS, group.id)}
+              progressBadge={
+                <GroupProgressBadge groupId={group.id} totalCharacters={group.character_count} />
+              }
             />
           ))}
         </div>
@@ -71,6 +78,9 @@ export default function HiraganaOverviewPage() {
               key={group.id}
               group={group}
               characters={getCharactersByGroup(HIRAGANA_CHARACTERS, group.id)}
+              progressBadge={
+                <GroupProgressBadge groupId={group.id} totalCharacters={group.character_count} />
+              }
             />
           ))}
         </div>
@@ -87,10 +97,15 @@ export default function HiraganaOverviewPage() {
               key={group.id}
               group={group}
               characters={getCharactersByGroup(HIRAGANA_CHARACTERS, group.id)}
+              progressBadge={
+                <GroupProgressBadge groupId={group.id} totalCharacters={group.character_count} />
+              }
             />
           ))}
         </div>
       </section>
+
+      <AchievementList />
 
       <div className="border-t border-border pt-6">
         <Link

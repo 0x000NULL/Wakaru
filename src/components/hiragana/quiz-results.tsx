@@ -1,17 +1,36 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { AudioPlayButton } from '@/components/hiragana/audio-play-button'
 import { useQuizStore } from '@/store/quiz-store'
+import { useProgressStore } from '@/store/progress-store'
 import Link from 'next/link'
 
 export function QuizResults() {
   const stats = useQuizStore((s) => s.stats())
+  const questions = useQuizStore((s) => s.questions)
+  const answers = useQuizStore((s) => s.answers)
   const restartSession = useQuizStore((s) => s.restartSession)
   const practiceMissed = useQuizStore((s) => s.practiceMissed)
   const resetToSetup = useQuizStore((s) => s.resetToSetup)
+  const submitQuizResults = useProgressStore((s) => s.submitQuizResults)
+  const [progressSaved, setProgressSaved] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    if (answers.length === 0) return
+
+    const progressAnswers = answers.map((answer, index) => ({
+      character: questions[index].character.character,
+      isCorrect: answer.isCorrect,
+    }))
+
+    submitQuizResults(progressAnswers)
+      .then(() => setProgressSaved(true))
+      .catch(() => setProgressSaved(false))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const accuracyColor =
     stats.accuracy >= 80
@@ -36,6 +55,12 @@ export function QuizResults() {
         <p className="mt-2 text-sm text-muted-foreground">
           {totalSeconds}s total &middot; {avgSeconds}s per question
         </p>
+        {progressSaved === true && (
+          <p className="mt-2 text-xs text-green-600 dark:text-green-400">Progress saved</p>
+        )}
+        {progressSaved === false && (
+          <p className="mt-2 text-xs text-muted-foreground">Could not save progress</p>
+        )}
       </div>
 
       {/* Missed characters */}
@@ -68,7 +93,7 @@ export function QuizResults() {
           Change Settings
         </Button>
         <Link href="/hiragana">
-          <Button variant="ghost" className="w-full sm:w-auto">Back to Hiragana</Button>
+          <Button variant="ghost" className="w-full sm:w-auto">View Progress</Button>
         </Link>
       </div>
     </div>

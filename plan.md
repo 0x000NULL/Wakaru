@@ -103,14 +103,14 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Implement quiz scoring and accuracy tracking
 
 #### Hiragana Progress Tracking
-- [ ] Create user_progress table entries for hiragana
-- [ ] Implement character learned/mastered status tracking
-- [ ] Track accuracy per character
-- [ ] Calculate and display overall hiragana completion %
-- [ ] Implement SRS-lite scheduling for hiragana reviews
-- [ ] Create hiragana progress dashboard view
-- [ ] Show due reviews count for hiragana
-- [ ] Add achievement milestone (e.g., "All vowels learned!")
+- [x] Create user_progress table entries for hiragana
+- [x] Implement character learned/mastered status tracking
+- [x] Track accuracy per character
+- [x] Calculate and display overall hiragana completion %
+- [x] Implement SRS-lite scheduling for hiragana reviews
+- [x] Create hiragana progress dashboard view
+- [x] Show due reviews count for hiragana
+- [x] Add achievement milestone (e.g., "All vowels learned!")
 
 #### Testing & Validation
 - [ ] Test complete hiragana learning flow
@@ -125,20 +125,20 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 ### Phase 1C: Vocabulary System with SRS
 
 #### Vocabulary Database
-- [ ] Create vocabulary table schema
-- [ ] Create example_sentences table schema
-- [ ] Create vocabulary_sentences junction table
-- [ ] Download and parse JMdict dictionary data
-- [ ] Download BCCWJ frequency lists
-- [ ] Import top 1000 words with meanings and readings
-- [ ] Source example sentences from Tatoeba for 1000 words
-- [ ] Filter and quality-check example sentences
-- [ ] Tag vocabulary with JLPT levels (N5-N3)
-- [ ] Tag vocabulary with frequency tiers
-- [ ] Add part of speech data
-- [ ] Source or generate audio files for vocabulary
-- [ ] Expand vocabulary database to 3000 words
-- [ ] Create vocabulary seeding script
+- [x] Create vocabulary table schema
+- [x] Create example_sentences table schema
+- [x] Create vocabulary_sentences junction table
+- [x] Download and parse JMdict dictionary data
+- [x] Download Leeds frequency lists
+- [x] Import top 1000 words with meanings and readings
+- [x] Source example sentences from Tatoeba for 3000 words (7,015 sentences, 92.9% coverage)
+- [x] Filter and quality-check example sentences
+- [x] Tag vocabulary with JLPT levels (N5-N3)
+- [x] Tag vocabulary with frequency tiers
+- [x] Add part of speech data
+- [x] Source or generate audio files for vocabulary (Web Speech API TTS for MVP)
+- [x] Expand vocabulary database to 3000 words
+- [x] Create vocabulary seeding script
 
 #### SRS Algorithm Implementation
 - [ ] Create `lib/utils/srs-algorithm.ts` file

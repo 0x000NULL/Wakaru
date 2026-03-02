@@ -1,7 +1,32 @@
+import * as fs from 'fs'
+import * as path from 'path'
 import { Prisma, PrismaClient } from '@prisma/client'
 import { HIRAGANA_CHARACTERS } from '../src/lib/constants/hiragana-data'
 
 const prisma = new PrismaClient()
+
+const DATA_DIR = path.join(__dirname, 'data')
+
+interface VocabEntry {
+  word: string
+  reading: string
+  meaning: string
+  part_of_speech: string
+  jlpt_level: string | null
+  frequency_rank: number | null
+  tags: string[]
+}
+
+interface SentenceEntry {
+  source_id: string
+  japanese: string
+  english: string
+}
+
+interface JunctionEntry {
+  word: string
+  source_id: string
+}
 
 async function main() {
   console.log('🌱 Starting database seed...')
@@ -43,65 +68,138 @@ async function main() {
   console.log(`✓ Seeded ${HIRAGANA_CHARACTERS.length} hiragana characters`)
 
   // ============================================================================
-  // SEED SAMPLE VOCABULARY
+  // SEED VOCABULARY (from pipeline-generated JSON)
   // ============================================================================
-  const vocabData = [
-    {
-      word: '学ぶ',
-      reading: 'まなぶ',
-      meaning: 'to learn; to study',
-      part_of_speech: 'verb',
-      jlpt_level: 'N5',
-      frequency_rank: 1250,
-      tags: ['verb', 'education'],
-    },
-    {
-      word: 'こんにちは',
-      reading: 'こんにちは',
-      meaning: 'hello; good afternoon',
-      part_of_speech: 'expression',
-      jlpt_level: 'N5',
-      frequency_rank: 150,
-      tags: ['greeting', 'common'],
-    },
-    {
-      word: 'ありがとう',
-      reading: 'ありがとう',
-      meaning: 'thank you',
-      part_of_speech: 'expression',
-      jlpt_level: 'N5',
-      frequency_rank: 200,
-      tags: ['greeting', 'common'],
-    },
-    {
-      word: '日本',
-      reading: 'にほん',
-      meaning: 'Japan',
-      part_of_speech: 'noun',
-      jlpt_level: 'N5',
-      frequency_rank: 50,
-      tags: ['country', 'geography'],
-    },
-    {
-      word: '学生',
-      reading: 'がくせい',
-      meaning: 'student',
-      part_of_speech: 'noun',
-      jlpt_level: 'N5',
-      frequency_rank: 300,
-      tags: ['person', 'education'],
-    },
-  ]
+  const vocabPath = path.join(DATA_DIR, 'vocabulary.json')
+  if (fs.existsSync(vocabPath)) {
+    const vocabData: VocabEntry[] = JSON.parse(fs.readFileSync(vocabPath, 'utf-8'))
+    console.log(`Seeding ${vocabData.length.toLocaleString()} vocabulary items...`)
 
-  console.log('Seeding sample vocabulary...')
-  for (const vocab of vocabData) {
-    await prisma.vocabulary.upsert({
-      where: { word: vocab.word },
-      update: {},
-      create: vocab,
-    })
+    // Batch upsert in chunks for performance
+    const BATCH_SIZE = 100
+    for (let i = 0; i < vocabData.length; i += BATCH_SIZE) {
+      const batch = vocabData.slice(i, i + BATCH_SIZE)
+      await Promise.all(
+        batch.map((vocab) =>
+          prisma.vocabulary.upsert({
+            where: { word: vocab.word },
+            update: {
+              reading: vocab.reading,
+              meaning: vocab.meaning,
+              part_of_speech: vocab.part_of_speech,
+              jlpt_level: vocab.jlpt_level,
+              frequency_rank: vocab.frequency_rank,
+              tags: vocab.tags,
+            },
+            create: vocab,
+          })
+        )
+      )
+      if ((i + BATCH_SIZE) % 500 === 0 || i + BATCH_SIZE >= vocabData.length) {
+        console.log(
+          `  Progress: ${Math.min(i + BATCH_SIZE, vocabData.length)} / ${vocabData.length}`
+        )
+      }
+    }
+    console.log(`✓ Seeded ${vocabData.length.toLocaleString()} vocabulary items`)
+  } else {
+    console.log('⏭  No vocabulary.json found, skipping vocabulary seed')
+    console.log('   Run: npx tsx scripts/vocab-pipeline/run-pipeline.ts')
   }
-  console.log(`✓ Seeded ${vocabData.length} vocabulary items`)
+
+  // ============================================================================
+  // SEED EXAMPLE SENTENCES (from pipeline-generated JSON)
+  // ============================================================================
+  const sentencesPath = path.join(DATA_DIR, 'example-sentences.json')
+  if (fs.existsSync(sentencesPath)) {
+    const sentencesData: SentenceEntry[] = JSON.parse(
+      fs.readFileSync(sentencesPath, 'utf-8')
+    )
+    console.log(`Seeding ${sentencesData.length.toLocaleString()} example sentences...`)
+
+    const BATCH_SIZE = 100
+    for (let i = 0; i < sentencesData.length; i += BATCH_SIZE) {
+      const batch = sentencesData.slice(i, i + BATCH_SIZE)
+      await Promise.all(
+        batch.map((s) =>
+          prisma.exampleSentence.upsert({
+            where: { source_id: s.source_id },
+            update: {
+              japanese: s.japanese,
+              english: s.english,
+            },
+            create: {
+              source_id: s.source_id,
+              japanese: s.japanese,
+              english: s.english,
+            },
+          })
+        )
+      )
+      if ((i + BATCH_SIZE) % 1000 === 0 || i + BATCH_SIZE >= sentencesData.length) {
+        console.log(
+          `  Progress: ${Math.min(i + BATCH_SIZE, sentencesData.length)} / ${sentencesData.length}`
+        )
+      }
+    }
+    console.log(`✓ Seeded ${sentencesData.length.toLocaleString()} example sentences`)
+  } else {
+    console.log('⏭  No example-sentences.json found, skipping sentences seed')
+  }
+
+  // ============================================================================
+  // SEED VOCABULARY-SENTENCE JUNCTIONS (from pipeline-generated JSON)
+  // ============================================================================
+  const junctionsPath = path.join(DATA_DIR, 'vocabulary-sentences.json')
+  if (fs.existsSync(junctionsPath)) {
+    const junctionsData: JunctionEntry[] = JSON.parse(
+      fs.readFileSync(junctionsPath, 'utf-8')
+    )
+    console.log(
+      `Seeding ${junctionsData.length.toLocaleString()} vocabulary-sentence mappings...`
+    )
+
+    // Build lookup maps for resolving word → vocabulary.id and source_id → sentence.id
+    const vocabIdMap = new Map<string, string>()
+    const allVocab = await prisma.vocabulary.findMany({ select: { id: true, word: true } })
+    for (const v of allVocab) vocabIdMap.set(v.word, v.id)
+
+    const sentenceIdMap = new Map<string, string>()
+    const allSentences = await prisma.exampleSentence.findMany({
+      select: { id: true, source_id: true },
+    })
+    for (const s of allSentences) {
+      if (s.source_id) sentenceIdMap.set(s.source_id, s.id)
+    }
+
+    let created = 0
+    let skipped = 0
+    const BATCH_SIZE = 100
+    for (let i = 0; i < junctionsData.length; i += BATCH_SIZE) {
+      const batch = junctionsData.slice(i, i + BATCH_SIZE)
+      const validEntries = batch
+        .map((j) => ({
+          vocabulary_id: vocabIdMap.get(j.word),
+          sentence_id: sentenceIdMap.get(j.source_id),
+        }))
+        .filter(
+          (e): e is { vocabulary_id: string; sentence_id: string } =>
+            e.vocabulary_id !== undefined && e.sentence_id !== undefined
+        )
+
+      if (validEntries.length > 0) {
+        await prisma.vocabularySentence.createMany({
+          data: validEntries,
+          skipDuplicates: true,
+        })
+        created += validEntries.length
+      }
+      skipped += batch.length - validEntries.length
+    }
+    console.log(`✓ Seeded ${created.toLocaleString()} junctions (${skipped} skipped)`)
+  } else {
+    console.log('⏭  No vocabulary-sentences.json found, skipping junctions seed')
+  }
 
   // ============================================================================
   // SEED SAMPLE GRAMMAR PATTERNS

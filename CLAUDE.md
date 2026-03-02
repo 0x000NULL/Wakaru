@@ -10,7 +10,7 @@ See `plan.md` for the implementation roadmap, `architecture.md` for technical de
 
 ## Current Status
 
-Phase 1A (Foundation), Phase 1B (Hiragana Data), Phase 1C (Hiragana Learning Interface), and Hiragana Practice Modes are complete. The project has 14 Prisma models, full JWT auth system, basic UI components, responsive navigation, Zustand stores (auth + quiz), auth pages, dashboard layout, the complete hiragana data layer (79 characters with mnemonics, example words, stroke order SVGs, special rules, and utility functions), the full hiragana learning interface (course overview, group lessons with keyboard navigation, and special rules page), and 4 quiz modes (recognition, typing, audio, mixed) with session-based scoring.
+Phase 1A (Foundation), Phase 1B (Hiragana Data), Phase 1C (Hiragana Learning Interface), Hiragana Practice Modes, and Hiragana Progress Tracking are complete. The project has 17 Prisma models, full JWT auth system, basic UI components, responsive navigation, Zustand stores (auth, quiz, progress), auth pages, dashboard layout, the complete hiragana data layer (79 characters with mnemonics, example words, stroke order SVGs, special rules, and utility functions), the full hiragana learning interface (course overview, group lessons with keyboard navigation, and special rules page), 4 quiz modes (recognition, typing, audio, mixed) with session-based scoring, and persistent progress tracking with SRS-lite scheduling, per-group progress badges, and a 7-achievement milestone system.
 
 ## Commands
 
@@ -60,7 +60,7 @@ JWT-based auth with HTTP-only cookies (`access_token` 7d, `refresh_token` 30d). 
 
 | Layer | File | Purpose |
 |-------|------|---------|
-| Middleware | `src/middleware.ts` | Protects `/dashboard/*` and `/hiragana/*`, redirects authed users from auth pages |
+| Proxy | `src/proxy.ts` | Protects `/dashboard/*` and `/hiragana/*`, redirects authed users from auth pages (Node.js runtime) |
 | Auth helper | `src/lib/auth.ts` | `getAuthUser()` — reads cookie, verifies JWT, fetches user |
 | JWT | `src/lib/utils/jwt.ts` | `signAccessToken`, `signRefreshToken`, `verifyAccessToken`, `verifyRefreshToken` |
 | Cookies | `src/lib/utils/cookies.ts` | `setAuthCookies`, `clearAuthCookies` (HTTP-only, Secure, SameSite=Strict) |
@@ -120,12 +120,12 @@ Routes under `src/app/(dashboard)/hiragana/`:
 
 | Route | File | Purpose |
 |-------|------|---------|
-| `/hiragana` | `page.tsx` | Course overview — all 14 groups in 3 sections (Basic, Voiced, Combinations) |
+| `/hiragana` | `page.tsx` | Course overview — all 14 groups in 3 sections, progress overview, per-group progress badges, achievements |
 | `/hiragana/[groupId]` | `[groupId]/page.tsx` | Group lesson — characters one at a time with keyboard navigation (ArrowLeft/ArrowRight) |
 | `/hiragana/practice` | `practice/page.tsx` | Quiz practice — 4 modes (recognition, typing, audio, mixed) with setup/active/results phases |
 | `/hiragana/rules` | `rules/page.tsx` | 5 special rules (long vowels, particles, confused pairs, etc.) |
 
-Feature components live in `src/components/hiragana/`. The group lesson page uses local `useState` for character index — no Zustand store needed. All data is static TypeScript constants (no API calls). To add a new protected route, add it to both `PROTECTED_ROUTES` in `src/middleware.ts` and `config.matcher`.
+Feature components live in `src/components/hiragana/`. The group lesson page uses local `useState` for character index — no Zustand store needed. All data is static TypeScript constants (no API calls). To add a new protected route, add it to both `PROTECTED_ROUTES` in `src/proxy.ts` and `config.matcher`.
 
 ### Hiragana Data Layer
 
@@ -161,9 +161,36 @@ Quiz store (`src/store/quiz-store.ts`) manages session lifecycle: `setup → act
 
 Types in `src/types/quiz.ts`: `QuizMode`, `QuizPhase`, `QuestionType`, `QuizQuestion`, `QuizAnswer`, `QuizSessionConfig`, `QuizSessionStats`.
 
+### Hiragana Progress Tracking
+
+SRS-lite algorithm (`src/lib/utils/srs-lite.ts`) uses a fixed interval ladder instead of full SM-2 — simpler and appropriate for hiragana:
+- **Interval ladder**: `[0, 1, 3, 7, 14, 30]` days indexed by repetition count
+- **Correct answer** → `repetitions + 1`, **incorrect** → `max(0, repetitions - 1)`
+- **Status derived from repetitions**: 0=new, 1-2=learning, 3-4=reviewing, 5+=mastered
+- `ease_factor` left at default 2.5 (unused for hiragana, reserved for vocab SRS later)
+- Exports: `processReview(currentRepetitions, isCorrect) → SrsUpdate`, `deriveStatus(repetitions)`, `calculateNextInterval(repetitions)`
+
+Types in `src/types/progress.ts`: `ProgressStatus`, `CharacterProgress`, `HiraganaProgressSummary`, `GroupProgress`, `Achievement`, `SrsState`, `SrsUpdate`, `DueReviewsResponse`.
+
+API endpoints:
+- **GET `/api/v1/hiragana/progress`** — Returns `HiraganaProgressSummary` merging all 79 kana with user's `UserProgress` records
+- **POST `/api/v1/hiragana/progress`** — Accepts `{ answers: [{ character, isCorrect }] }`, aggregates per-character (majority wins), upserts via `prisma.$transaction`, returns updated summary
+- **GET `/api/v1/hiragana/progress/due`** — Returns characters with `next_review_at <= now`
+
+Progress store (`src/store/progress-store.ts`) is ephemeral (mirrors server state). Actions: `fetchHiraganaProgress()`, `submitQuizResults(answers)`.
+
+Quiz results component (`src/components/hiragana/quiz-results.tsx`) auto-submits progress on mount and shows a "Progress saved" indicator.
+
+Achievements (`src/lib/constants/achievements.ts`) are computed client-side from `HiraganaProgressSummary` — no DB table. 7 milestones: First Step, Vowel Master, Basic Complete, Halfway There, Full Set, Sharp Eye (90%+ accuracy), Hiragana Master. `computeAchievements(progress)` evaluates them all.
+
+UI components:
+- `ProgressOverview` — completion bar, status counts (mastered/reviewing/learning), accuracy, due review CTA
+- `GroupProgressBadge` — small X/Y badge per group card (green when all mastered, blue otherwise)
+- `AchievementList` — grid of locked/unlocked achievements
+
 ### State Management
 
-Zustand stores in `src/store/`. Auth state uses `persist` middleware (key: `manabu-auth`). Quiz state is ephemeral (no persist). Planned stores: `reviewStore` (SRS session), `settingsStore` (user preferences).
+Zustand stores in `src/store/`. Auth state uses `persist` middleware (key: `manabu-auth`). Quiz and progress states are ephemeral (no persist). Planned stores: `settingsStore` (user preferences).
 
 ## Conventions
 
@@ -175,4 +202,5 @@ Zustand stores in `src/store/`. Auth state uses `persist` middleware (key: `mana
 - **Component files**: UI primitives in `src/components/ui/`, layout in `src/components/layout/`, feature components in `src/components/{feature}/` (e.g., `src/components/hiragana/`)
 - **Utility files**: kebab-case in `src/lib/utils/` (e.g., `rate-limit.ts`, `api-response.ts`)
 - **Constants files**: Static data in `src/lib/constants/` — importable by both app code and `prisma/seed.ts`
-- **Type files**: Shared interfaces in `src/types/` (e.g., `kana.ts`, `auth.ts`, `api.ts`)
+- **Type files**: Shared interfaces in `src/types/` (e.g., `kana.ts`, `auth.ts`, `api.ts`, `progress.ts`)
+- **Validation files**: Zod schemas in `src/lib/validations/` (e.g., `auth.ts`, `progress.ts`)

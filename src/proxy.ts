@@ -4,7 +4,7 @@ import { verifyAccessToken } from '@/lib/utils/jwt'
 const PROTECTED_ROUTES = ['/dashboard', '/hiragana']
 const AUTH_ROUTES = ['/login', '/register', '/reset-password']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const accessToken = request.cookies.get('access_token')?.value
 

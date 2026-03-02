@@ -7,9 +7,10 @@ interface GroupCardProps {
   group: KanaGroup
   characters: KanaCharacter[]
   className?: string
+  progressBadge?: React.ReactNode
 }
 
-export function GroupCard({ group, characters, className }: GroupCardProps) {
+export function GroupCard({ group, characters, className, progressBadge }: GroupCardProps) {
   const preview = characters.map(c => c.character).join(' ')
 
   return (
@@ -33,6 +34,7 @@ export function GroupCard({ group, characters, className }: GroupCardProps) {
                 Combination
               </span>
             )}
+            {progressBadge}
           </div>
         </CardHeader>
         <CardContent>

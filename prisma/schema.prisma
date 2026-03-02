@@ -80,6 +80,7 @@ model UserProgress {
   @@unique([user_id, category, item_id])
   @@index([user_id, next_review_at])
   @@index([user_id, category])
+  @@index([user_id, category, next_review_at])
   @@map("user_progress")
 }
 
@@ -111,6 +112,7 @@ model Vocabulary {
 
 model ExampleSentence {
   id                String    @id @default(cuid())
+  source_id         String?   @unique  // e.g. "tatoeba-12345"
   japanese          String    @db.Text
   english           String    @db.Text
   furigana          String?   @db.Text
