@@ -1,0 +1,79 @@
+1
+00:00:04,000 --> 00:00:07,500
+Hey, what are everyone's dreams for the future?
+
+2
+00:00:09,500 --> 00:00:13,000
+I want to open my own cafe someday.
+
+3
+00:00:15,000 --> 00:00:18,500
+Wait, a cafe? Do you like coffee, Daiki?
+
+4
+00:00:20,000 --> 00:00:23,500
+Yeah, I love it. I want to do it near the ocean.
+
+5
+00:00:25,500 --> 00:00:29,000
+That's great. Coffee after surfing would be the best.
+
+6
+00:00:31,000 --> 00:00:34,500
+What about you, Misaki? How's your job going?
+
+7
+00:00:36,000 --> 00:00:39,500
+I'm working at an IT company now, but I really want to become a writer.
+
+8
+00:00:41,500 --> 00:00:45,000
+Really? What do you want to write about?
+
+9
+00:00:47,000 --> 00:00:50,500
+Travel. I want to write articles while traveling around the world.
+
+10
+00:00:52,500 --> 00:00:56,000
+That's cool. But would you quit your current job?
+
+11
+00:00:58,000 --> 00:01:01,500
+I haven't decided yet. It's a little scary, you know?
+
+12
+00:01:03,500 --> 00:01:07,000
+I get it. Quitting a stable job takes a lot of courage.
+
+13
+00:01:09,000 --> 00:01:12,500
+Kenta, you said you want to be an architect, right?
+
+14
+00:01:14,000 --> 00:01:17,500
+Yeah. But lately I've been interested in eco-friendly buildings.
+
+15
+00:01:19,500 --> 00:01:23,000
+What about you, Mai? What do you want to do in the future?
+
+16
+00:01:24,500 --> 00:01:28,000
+I like modeling, but someday I want to create my own brand.
+
+17
+00:01:30,000 --> 00:01:33,500
+Clothes? Or accessories?
+
+18
+00:01:35,000 --> 00:01:38,500
+Clothes. Simple but stylish ones.
+
+19
+00:01:40,500 --> 00:01:44,000
+It's nice that everyone has dreams. I'm rooting for you all.
+
+20
+00:01:46,000 --> 00:01:49,500
+Thanks. I hope living here becomes some kind of turning point for us.

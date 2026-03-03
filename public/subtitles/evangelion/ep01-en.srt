@@ -1,0 +1,79 @@
+1
+00:00:05,000 --> 00:00:08,500
+In the year 2015 A.D., humanity was still recovering from the catastrophe known as "Second Impact."
+
+2
+00:00:12,000 --> 00:00:15,000
+Welcome to the special agency NERV, Shinji Ikari.
+
+3
+00:00:18,500 --> 00:00:21,500
+Target confirmed. Massive object detected approaching Tokyo-3.
+
+4
+00:00:25,000 --> 00:00:28,000
+An Angel, as I thought. The first one in fifteen years.
+
+5
+00:00:31,500 --> 00:00:35,000
+Conventional weapons from the UN forces have absolutely no effect against the Angel.
+
+6
+00:00:38,000 --> 00:00:41,500
+As long as it's deploying an AT Field, conventional weapons are powerless.
+
+7
+00:00:45,000 --> 00:00:48,000
+Commander Ikari, requesting authorization to use an N2 mine.
+
+8
+00:00:52,000 --> 00:00:55,500
+Activate Evangelion Unit-01. Has the pilot arrived?
+
+9
+00:00:59,000 --> 00:01:02,500
+I'm supposed to... ride this thing? This robot?
+
+10
+00:01:06,000 --> 00:01:09,500
+An Eva is not a robot. It is the multipurpose humanoid decisive weapon — the artificial human, Evangelion.
+
+11
+00:01:13,000 --> 00:01:16,000
+Get in. Otherwise, go home.
+
+12
+00:01:19,500 --> 00:01:23,000
+Father... you called me here just for this?
+
+13
+00:01:26,000 --> 00:01:29,500
+The synchronization rate is abnormally high. These readings are unprecedented for an initial connection.
+
+14
+00:01:33,000 --> 00:01:36,500
+Eva Unit-01, launch preparations complete. Release all restraints.
+
+15
+00:01:40,000 --> 00:01:43,500
+Connected to launch catapult. Initiating launch sequence.
+
+16
+00:01:47,000 --> 00:01:50,500
+Evangelion Unit-01, launch!
+
+17
+00:01:54,000 --> 00:01:57,500
+The Angel is attacking! Take evasive action!
+
+18
+00:02:01,000 --> 00:02:04,500
+Unit-01 is out of control! The pilot's vital signs are dropping rapidly!
+
+19
+00:02:08,000 --> 00:02:12,000
+Unit-01 has... gone berserk? Is this the Eva's true form?
+
+20
+00:02:15,500 --> 00:02:19,000
+Angel silence confirmed. Pattern blue, annihilated. Primary operation, complete.

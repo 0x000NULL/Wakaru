@@ -1,0 +1,35 @@
+name: wakaru
+region: sfo
+services:
+  - name: wakaru-web
+    github:
+      repo: 0x000NULL/Wakaru
+      branch: master
+      deploy_on_push: true
+    build_command: npx prisma generate && npx prisma migrate deploy && npm run build
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    http_port: 3000
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${db-wakaru.DATABASE_URL}
+      - key: JWT_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: CHANGE_ME
+      - key: JWT_REFRESH_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: CHANGE_ME
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+databases:
+  - name: db-wakaru
+    engine: PG
+    version: "16"
+    production: false
+    num_nodes: 1

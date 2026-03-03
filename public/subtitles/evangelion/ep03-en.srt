@@ -1,0 +1,79 @@
+1
+00:00:05,000 --> 00:00:08,500
+I'm the transfer student, Shinji Ikari. Nice to meet you.
+
+2
+00:00:12,000 --> 00:00:15,500
+That guy is the Eva pilot? A normal kid like him?
+
+3
+00:00:19,000 --> 00:00:22,500
+Toji, your sister got hurt in that battle, right? It's his fault.
+
+4
+00:00:26,000 --> 00:00:29,500
+Why are you hitting me? It's not like I wanted to pilot the Eva.
+
+5
+00:00:33,000 --> 00:00:37,000
+Emergency situation. The Fourth Angel is approaching from the Hakone Mountain area. All personnel, assume Level One battle stations.
+
+6
+00:00:40,500 --> 00:00:44,000
+Shinji Ikari, report to NERV headquarters immediately. Repeat, report immediately.
+
+7
+00:00:47,500 --> 00:00:51,000
+Eva Unit-01, commencing activation sequence. The pilot's mental state is unstable.
+
+8
+00:00:54,500 --> 00:00:58,000
+It doesn't matter. Send him out. There is no other means to defeat the Angel.
+
+9
+00:01:01,500 --> 00:01:05,000
+Distance to target, 1200 meters. Now within firing range.
+
+10
+00:01:08,500 --> 00:01:12,000
+Suppress it with the pallet rifle. Neutralizing the AT Field is top priority.
+
+11
+00:01:15,500 --> 00:01:19,000
+Unable to neutralize the AT Field! Insufficient power output!
+
+12
+00:01:22,500 --> 00:01:26,000
+The power cable has been severed! Switching to internal battery. Four minutes and thirty-two seconds until operational limit.
+
+13
+00:01:29,500 --> 00:01:33,000
+Ikari, stay calm. You can do this. Focus.
+
+14
+00:01:36,500 --> 00:01:40,000
+Use the progressive knife! Force it into close combat!
+
+15
+00:01:43,500 --> 00:01:47,000
+Angel core confirmed. Destroying that red sphere should defeat it.
+
+16
+00:01:50,500 --> 00:01:54,000
+Thirty seconds until operational limit. Hurry, Ikari!
+
+17
+00:01:57,500 --> 00:02:01,000
+Angel, activity ceased. Core destruction confirmed. Operation complete.
+
+18
+00:02:04,500 --> 00:02:08,000
+That was incredible, Ikari. You really defeated the Angel.
+
+19
+00:02:11,500 --> 00:02:15,000
+Nobody ever calls. Even if I weren't here, nobody would care.
+
+20
+00:02:18,500 --> 00:02:22,000
+Ikari, you're always alone, aren't you? You look kind of lonely.

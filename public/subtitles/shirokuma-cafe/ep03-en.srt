@@ -1,0 +1,79 @@
+1
+00:00:05,000 --> 00:00:09,000
+Let's go to Grizzly's bar.
+
+2
+00:00:11,000 --> 00:00:15,000
+Good evening. Welcome!
+
+3
+00:00:17,000 --> 00:00:21,000
+Grizzly, your shop is so cool!
+
+4
+00:00:23,000 --> 00:00:27,000
+Thanks. I built it myself.
+
+5
+00:00:29,000 --> 00:00:33,000
+What would you like to drink?
+
+6
+00:00:35,000 --> 00:00:39,000
+What do you recommend?
+
+7
+00:00:41,000 --> 00:00:45,000
+Today's recommendation is honey milk.
+
+8
+00:00:47,000 --> 00:00:51,000
+Honey! That sounds good. I'll have that please.
+
+9
+00:00:53,000 --> 00:00:57,000
+Grizzly, how long have you been running the bar?
+
+10
+00:00:59,000 --> 00:01:03,000
+Since three years ago.
+
+11
+00:01:05,000 --> 00:01:09,000
+What is your dream?
+
+12
+00:01:11,000 --> 00:01:15,000
+I want to have a bigger shop.
+
+13
+00:01:17,000 --> 00:01:21,000
+That's a wonderful dream.
+
+14
+00:01:23,000 --> 00:01:27,000
+Unlike Polar Bear's cafe, this is a nighttime shop.
+
+15
+00:01:29,000 --> 00:01:33,000
+The nighttime atmosphere is nice too, isn't it?
+
+16
+00:01:35,000 --> 00:01:39,000
+Do many customers come?
+
+17
+00:01:41,000 --> 00:01:45,000
+Weekends are busy. Weekdays are quiet.
+
+18
+00:01:47,000 --> 00:01:51,000
+Let's both do our best!
+
+19
+00:01:53,000 --> 00:01:57,000
+It's getting late. I should head home soon.
+
+20
+00:01:59,000 --> 00:02:03,000
+Please come again. Good night!

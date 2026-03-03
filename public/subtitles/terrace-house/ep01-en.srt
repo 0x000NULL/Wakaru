@@ -1,0 +1,79 @@
+1
+00:00:05,000 --> 00:00:08,500
+Nice to meet you. I'm Shota. Pleased to meet you all.
+
+2
+00:00:10,000 --> 00:00:13,000
+Um, I'm from Tokyo, and right now I'm working as an office worker.
+
+3
+00:00:15,000 --> 00:00:18,500
+I'm Misaki. I came from Osaka.
+
+4
+00:00:20,000 --> 00:00:23,000
+Oh, you're from Osaka. That's cool.
+
+5
+00:00:25,000 --> 00:00:28,500
+Yeah, but I'm already used to life in Tokyo.
+
+6
+00:00:30,500 --> 00:00:34,000
+I'm Kenta. I'm a college student studying architecture.
+
+7
+00:00:36,000 --> 00:00:39,500
+Architecture, huh. That's cool. What do you want to be in the future?
+
+8
+00:00:41,000 --> 00:00:44,500
+My dream is to design my own house.
+
+9
+00:00:46,500 --> 00:00:50,000
+Oh, I'm Mai. I work as a model.
+
+10
+00:00:52,000 --> 00:00:55,000
+Wow! Do you appear on TV and stuff?
+
+11
+00:00:56,500 --> 00:01:00,000
+No, just magazines so far. But I'm working hard at it.
+
+12
+00:01:02,000 --> 00:01:05,500
+I'm Daiki. I love surfing, and I used to live in Shonan.
+
+13
+00:01:07,500 --> 00:01:10,500
+Surfing! That's so nice. I want to try it too.
+
+14
+00:01:12,500 --> 00:01:16,000
+Then I'll teach you sometime. Let's all go together.
+
+15
+00:01:18,000 --> 00:01:21,500
+This house is really spacious, isn't it? The kitchen is big too.
+
+16
+00:01:23,500 --> 00:01:27,000
+It really is. We can all cook together. Sounds fun.
+
+17
+00:01:29,000 --> 00:01:32,500
+Well then, looking forward to living with everyone.
+
+18
+00:01:34,000 --> 00:01:37,500
+Same here! I hope we have a good time together.
+
+19
+00:01:39,500 --> 00:01:43,000
+I'm kind of nervous, but it's exciting, right?
+
+20
+00:01:45,000 --> 00:01:48,500
+Yeah, it's definitely going to be fun. Let's do our best together.

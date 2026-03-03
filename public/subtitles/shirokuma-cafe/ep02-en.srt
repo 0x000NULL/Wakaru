@@ -1,0 +1,71 @@
+1
+00:00:05,000 --> 00:00:09,000
+Panda, you don't seem well.
+
+2
+00:00:11,000 --> 00:00:15,000
+Yeah... I'm looking for a job.
+
+3
+00:00:17,000 --> 00:00:21,000
+What kind of job do you want to do?
+
+4
+00:00:23,000 --> 00:00:27,000
+A job where I can sleep a lot would be nice.
+
+5
+00:00:29,000 --> 00:00:33,000
+Panda, that's going to be difficult.
+
+6
+00:00:35,000 --> 00:00:39,000
+How about the zoo?
+
+7
+00:00:41,000 --> 00:00:45,000
+A job at the zoo?
+
+8
+00:00:47,000 --> 00:00:51,000
+You're a panda, so it's a perfect fit!
+
+9
+00:00:53,000 --> 00:00:57,000
+But what do I do every day?
+
+10
+00:00:59,000 --> 00:01:03,000
+You eat bamboo, sleep, and things like that.
+
+11
+00:01:05,000 --> 00:01:09,000
+That sounds great! I want to do it.
+
+12
+00:01:11,000 --> 00:01:15,000
+Then, let's go to the interview tomorrow.
+
+13
+00:01:17,000 --> 00:01:21,000
+I'm not good at interviews...
+
+14
+00:01:23,000 --> 00:01:27,000
+It's okay. Let's practice.
+
+15
+00:01:29,000 --> 00:01:33,000
+What are your hobbies?
+
+16
+00:01:35,000 --> 00:01:39,000
+My hobby is lounging around.
+
+17
+00:01:41,000 --> 00:01:45,000
+Let's try a little harder, Panda.
+
+18
+00:01:47,000 --> 00:01:51,000
+Understood. I'll do my best!

@@ -1,0 +1,79 @@
+1
+00:00:05,000 --> 00:00:09,000
+Penguin, something seems different about you today.
+
+2
+00:00:11,000 --> 00:00:15,000
+Actually... there's someone I like.
+
+3
+00:00:17,000 --> 00:00:21,000
+What?! Who is it?
+
+4
+00:00:23,000 --> 00:00:27,000
+It's Miss Penko the penguin. She's very cute.
+
+5
+00:00:29,000 --> 00:00:33,000
+When did you meet her?
+
+6
+00:00:35,000 --> 00:00:39,000
+I met her at the aquarium last week.
+
+7
+00:00:41,000 --> 00:00:45,000
+Did you talk to Miss Penko?
+
+8
+00:00:47,000 --> 00:00:51,000
+Not yet. I'm too embarrassed...
+
+9
+00:00:53,000 --> 00:00:57,000
+Go for it! Let's try talking to her.
+
+10
+00:00:59,000 --> 00:01:03,000
+What should I say?
+
+11
+00:01:05,000 --> 00:01:09,000
+First, say hello.
+
+12
+00:01:11,000 --> 00:01:15,000
+Then, ask "What's your name?"
+
+13
+00:01:17,000 --> 00:01:21,000
+Ah, there's Miss Penko!
+
+14
+00:01:23,000 --> 00:01:27,000
+H-hello. Nice weather, isn't it?
+
+15
+00:01:29,000 --> 00:01:33,000
+Hello. Yes, it is. It's warm today.
+
+16
+00:01:35,000 --> 00:01:39,000
+Um... would you like to take a walk together?
+
+17
+00:01:41,000 --> 00:01:45,000
+Sure! Let's go.
+
+18
+00:01:47,000 --> 00:01:51,000
+He did it! That went well!
+
+19
+00:01:53,000 --> 00:01:57,000
+Congratulations, Penguin!
+
+20
+00:01:59,000 --> 00:02:03,000
+Thank you, everyone. I'm so happy.

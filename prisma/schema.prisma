@@ -237,7 +237,7 @@ model GrammarExample {
 
 model MediaContent {
   id                String    @id @default(cuid())
-  title             String
+  title             String    @unique
   title_english     String?
   type              String    // 'anime', 'drama', 'movie', 'youtube'
   difficulty        String    // 'beginner', 'intermediate', 'advanced'

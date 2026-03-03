@@ -5,6 +5,7 @@ import { HIRAGANA_CHARACTERS } from '../src/lib/constants/hiragana-data'
 import { KATAKANA_CHARACTERS } from '../src/lib/constants/katakana-data'
 import { N5_GRAMMAR_PATTERNS } from '../src/lib/constants/grammar-data'
 import { N4_GRAMMAR_PATTERNS } from '../src/lib/constants/grammar-data-n4'
+import { MEDIA_LIBRARY } from '../src/lib/constants/media-data'
 
 const prisma = new PrismaClient()
 
@@ -269,6 +270,52 @@ async function main() {
     }
   }
   console.log(`✓ Seeded ${ALL_GRAMMAR_PATTERNS.length} grammar patterns with examples`)
+
+  // ============================================================================
+  // SEED MEDIA CONTENT (from constants)
+  // ============================================================================
+  console.log('Seeding media content...')
+  for (const entry of MEDIA_LIBRARY) {
+    const { episodes, streaming_url, subtitle_source, ...contentData } = entry
+    const upserted = await prisma.mediaContent.upsert({
+      where: { title: entry.title },
+      update: {
+        title_english: contentData.title_english,
+        type: contentData.type,
+        difficulty: contentData.difficulty,
+        jlpt_level: contentData.jlpt_level,
+        description: contentData.description,
+        genres: contentData.genres,
+      },
+      create: {
+        title: contentData.title,
+        title_english: contentData.title_english,
+        type: contentData.type,
+        difficulty: contentData.difficulty,
+        jlpt_level: contentData.jlpt_level,
+        description: contentData.description,
+        genres: contentData.genres,
+      },
+    })
+
+    // Replace episodes: delete existing, then create fresh
+    await prisma.mediaEpisode.deleteMany({
+      where: { media_id: upserted.id },
+    })
+    if (episodes.length > 0) {
+      await prisma.mediaEpisode.createMany({
+        data: episodes.map((ep) => ({
+          media_id: upserted.id,
+          episode_number: ep.episode_number,
+          title: ep.title,
+          duration_seconds: ep.duration_seconds,
+          subtitle_ja_url: ep.subtitle_ja_url,
+          subtitle_en_url: ep.subtitle_en_url,
+        })),
+      })
+    }
+  }
+  console.log(`✓ Seeded ${MEDIA_LIBRARY.length} media titles with episodes`)
 
   console.log('✅ Database seed completed!')
 }
