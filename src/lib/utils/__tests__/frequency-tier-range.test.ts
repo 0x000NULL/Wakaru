@@ -6,21 +6,21 @@ describe('getFrequencyRankRange', () => {
     expect(getFrequencyRankRange('essential')).toEqual({ gte: 1, lte: 500 })
   })
 
-  it('returns 501-1000 for core tier', () => {
-    expect(getFrequencyRankRange('core')).toEqual({ gte: 501, lte: 1000 })
+  it('returns 501-1500 for core tier', () => {
+    expect(getFrequencyRankRange('core')).toEqual({ gte: 501, lte: 1500 })
   })
 
-  it('returns 1001-2000 for intermediate tier', () => {
-    expect(getFrequencyRankRange('intermediate')).toEqual({ gte: 1001, lte: 2000 })
+  it('returns 1501-3500 for intermediate tier', () => {
+    expect(getFrequencyRankRange('intermediate')).toEqual({ gte: 1501, lte: 3500 })
   })
 
-  it('returns 2001-3000 for expanding tier', () => {
-    expect(getFrequencyRankRange('expanding')).toEqual({ gte: 2001, lte: 3000 })
+  it('returns 3501-6000 for expanding tier', () => {
+    expect(getFrequencyRankRange('expanding')).toEqual({ gte: 3501, lte: 6000 })
   })
 
-  it('returns 3001+ with no upper bound for advanced tier', () => {
+  it('returns 6001+ with no upper bound for advanced tier', () => {
     const range = getFrequencyRankRange('advanced')
-    expect(range.gte).toBe(3001)
+    expect(range.gte).toBe(6001)
     expect(range.lte).toBeUndefined()
   })
 })
