@@ -12,13 +12,20 @@ import { MnemonicCard } from '@/components/hiragana/mnemonic-card'
 import { ExampleWordsList } from '@/components/hiragana/example-words-list'
 import { LessonNavigation } from '@/components/hiragana/lesson-navigation'
 import { GroupProgressBar } from '@/components/hiragana/group-progress-bar'
+import { LessonComplete } from '@/components/hiragana/lesson-complete'
+import { useProgressStore } from '@/store/progress-store'
 
 export default function KatakanaGroupLessonPage() {
   const params = useParams<{ groupId: string }>()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const { fetchKatakanaProgress } = useProgressStore()
 
   const group = getGroupById(params.groupId, KATAKANA_GROUPS)
   const characters = getCharactersByGroup(KATAKANA_CHARACTERS, params.groupId)
+
+  useEffect(() => {
+    fetchKatakanaProgress()
+  }, [fetchKatakanaProgress])
 
   const goToPrevious = useCallback(() => {
     setCurrentIndex((i) => Math.max(0, i - 1))
@@ -119,6 +126,18 @@ export default function KatakanaGroupLessonPage() {
         groups={KATAKANA_GROUPS}
         className="border-t border-border pt-4"
       />
+
+      {/* Lesson complete section on last character */}
+      {currentIndex === characters.length - 1 && (
+        <LessonComplete
+          characters={characters}
+          groupName={group.name}
+          groupId={params.groupId}
+          kanaType="katakana"
+          routePrefix="/katakana"
+          groups={KATAKANA_GROUPS}
+        />
+      )}
     </div>
   )
 }

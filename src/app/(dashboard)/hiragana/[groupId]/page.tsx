@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { HIRAGANA_CHARACTERS } from '@/lib/constants/hiragana-data'
+import { HIRAGANA_GROUPS } from '@/lib/constants/hiragana-groups'
 import { getGroupById, getCharactersByGroup } from '@/lib/utils/kana'
 import { CharacterDisplay } from '@/components/hiragana/character-display'
 import { StrokeOrderViewer } from '@/components/hiragana/stroke-order-viewer'
@@ -11,13 +12,20 @@ import { MnemonicCard } from '@/components/hiragana/mnemonic-card'
 import { ExampleWordsList } from '@/components/hiragana/example-words-list'
 import { LessonNavigation } from '@/components/hiragana/lesson-navigation'
 import { GroupProgressBar } from '@/components/hiragana/group-progress-bar'
+import { LessonComplete } from '@/components/hiragana/lesson-complete'
+import { useProgressStore } from '@/store/progress-store'
 
 export default function GroupLessonPage() {
   const params = useParams<{ groupId: string }>()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const { fetchHiraganaProgress } = useProgressStore()
 
   const group = getGroupById(params.groupId)
   const characters = getCharactersByGroup(HIRAGANA_CHARACTERS, params.groupId)
+
+  useEffect(() => {
+    fetchHiraganaProgress()
+  }, [fetchHiraganaProgress])
 
   const goToPrevious = useCallback(() => {
     setCurrentIndex(i => Math.max(0, i - 1))
@@ -116,6 +124,17 @@ export default function GroupLessonPage() {
         currentGroupId={params.groupId}
         className="border-t border-border pt-4"
       />
+
+      {/* Lesson complete section on last character */}
+      {currentIndex === characters.length - 1 && (
+        <LessonComplete
+          characters={characters}
+          groupName={group.name}
+          groupId={params.groupId}
+          kanaType="hiragana"
+          groups={HIRAGANA_GROUPS}
+        />
+      )}
     </div>
   )
 }
