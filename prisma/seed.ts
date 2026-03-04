@@ -19,7 +19,7 @@ interface VocabEntry {
   part_of_speech: string
   jlpt_level: string | null
   frequency_rank: number | null
-  tags: string[]
+  tags: Record<string, unknown>
 }
 
 interface SentenceEntry {
@@ -116,10 +116,10 @@ async function main() {
     const vocabData: VocabEntry[] = JSON.parse(fs.readFileSync(vocabPath, 'utf-8'))
     console.log(`Seeding ${vocabData.length.toLocaleString()} vocabulary items...`)
 
-    // Batch upsert in chunks for performance
-    const BATCH_SIZE = 100
-    for (let i = 0; i < vocabData.length; i += BATCH_SIZE) {
-      const batch = vocabData.slice(i, i + BATCH_SIZE)
+    // Small parallel batches to avoid exhausting DB connection pool on managed PG
+    const VOCAB_BATCH = 5
+    for (let i = 0; i < vocabData.length; i += VOCAB_BATCH) {
+      const batch = vocabData.slice(i, i + VOCAB_BATCH)
       await Promise.all(
         batch.map((vocab) =>
           prisma.vocabulary.upsert({
@@ -130,15 +130,23 @@ async function main() {
               part_of_speech: vocab.part_of_speech,
               jlpt_level: vocab.jlpt_level,
               frequency_rank: vocab.frequency_rank,
-              tags: vocab.tags,
+              tags: vocab.tags as unknown as Prisma.InputJsonValue,
             },
-            create: vocab,
+            create: {
+              word: vocab.word,
+              reading: vocab.reading,
+              meaning: vocab.meaning,
+              part_of_speech: vocab.part_of_speech,
+              jlpt_level: vocab.jlpt_level,
+              frequency_rank: vocab.frequency_rank,
+              tags: vocab.tags as unknown as Prisma.InputJsonValue,
+            },
           })
         )
       )
-      if ((i + BATCH_SIZE) % 500 === 0 || i + BATCH_SIZE >= vocabData.length) {
+      if ((i + VOCAB_BATCH) % 1000 === 0 || i + VOCAB_BATCH >= vocabData.length) {
         console.log(
-          `  Progress: ${Math.min(i + BATCH_SIZE, vocabData.length)} / ${vocabData.length}`
+          `  Progress: ${Math.min(i + VOCAB_BATCH, vocabData.length)} / ${vocabData.length}`
         )
       }
     }
@@ -158,9 +166,9 @@ async function main() {
     )
     console.log(`Seeding ${sentencesData.length.toLocaleString()} example sentences...`)
 
-    const BATCH_SIZE = 100
-    for (let i = 0; i < sentencesData.length; i += BATCH_SIZE) {
-      const batch = sentencesData.slice(i, i + BATCH_SIZE)
+    const SENTENCE_BATCH = 5
+    for (let i = 0; i < sentencesData.length; i += SENTENCE_BATCH) {
+      const batch = sentencesData.slice(i, i + SENTENCE_BATCH)
       await Promise.all(
         batch.map((s) =>
           prisma.exampleSentence.upsert({
@@ -177,9 +185,9 @@ async function main() {
           })
         )
       )
-      if ((i + BATCH_SIZE) % 1000 === 0 || i + BATCH_SIZE >= sentencesData.length) {
+      if ((i + SENTENCE_BATCH) % 1000 === 0 || i + SENTENCE_BATCH >= sentencesData.length) {
         console.log(
-          `  Progress: ${Math.min(i + BATCH_SIZE, sentencesData.length)} / ${sentencesData.length}`
+          `  Progress: ${Math.min(i + SENTENCE_BATCH, sentencesData.length)} / ${sentencesData.length}`
         )
       }
     }
@@ -215,9 +223,9 @@ async function main() {
 
     let created = 0
     let skipped = 0
-    const BATCH_SIZE = 100
-    for (let i = 0; i < junctionsData.length; i += BATCH_SIZE) {
-      const batch = junctionsData.slice(i, i + BATCH_SIZE)
+    const JUNCTION_BATCH = 500
+    for (let i = 0; i < junctionsData.length; i += JUNCTION_BATCH) {
+      const batch = junctionsData.slice(i, i + JUNCTION_BATCH)
       const validEntries = batch
         .map((j) => ({
           vocabulary_id: vocabIdMap.get(j.word),
@@ -236,6 +244,11 @@ async function main() {
         created += validEntries.length
       }
       skipped += batch.length - validEntries.length
+      if ((i + JUNCTION_BATCH) % 5000 === 0 || i + JUNCTION_BATCH >= junctionsData.length) {
+        console.log(
+          `  Progress: ${Math.min(i + JUNCTION_BATCH, junctionsData.length)} / ${junctionsData.length}`
+        )
+      }
     }
     console.log(`✓ Seeded ${created.toLocaleString()} junctions (${skipped} skipped)`)
   } else {
