@@ -9,8 +9,8 @@ services:
       repo: 0x000NULL/Wakaru
       branch: master
       deploy_on_push: true
-    build_command: npx prisma generate && npx prisma migrate deploy && npm run build
-    run_command: npm start
+    build_command: DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder" npx prisma generate && npm run build
+    run_command: npx prisma db push --skip-generate --accept-data-loss && npx prisma db seed && npm start
     environment_slug: node-js
     instance_count: 1
     instance_size_slug: apps-s-1vcpu-0.5gb
