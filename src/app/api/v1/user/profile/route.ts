@@ -50,8 +50,12 @@ export async function PATCH(request: NextRequest) {
         display_name: true,
         created_at: true,
         last_login_at: true,
+        settings: true,
       },
     })
+
+    const settings = updated.settings as Record<string, unknown> | null
+    const onboardingCompleted = settings?.onboardingCompleted !== false
 
     return successResponse({
       id: updated.id,
@@ -59,6 +63,7 @@ export async function PATCH(request: NextRequest) {
       displayName: updated.display_name,
       createdAt: updated.created_at.toISOString(),
       lastLoginAt: updated.last_login_at?.toISOString() ?? null,
+      onboardingCompleted,
     })
   } catch (error) {
     console.error('Profile PATCH error:', error)

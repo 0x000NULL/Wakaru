@@ -10,6 +10,7 @@ interface AuthState {
   register: (email: string, password: string, displayName?: string) => Promise<void>
   logout: () => Promise<void>
   checkAuth: () => Promise<void>
+  completeOnboarding: () => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -61,6 +62,12 @@ export const useAuthStore = create<AuthState>()(
         } finally {
           set({ user: null, isAuthenticated: false })
         }
+      },
+
+      completeOnboarding: () => {
+        set(state => ({
+          user: state.user ? { ...state.user, onboardingCompleted: true } : null,
+        }))
       },
 
       checkAuth: async () => {

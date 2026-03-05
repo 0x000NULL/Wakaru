@@ -41,7 +41,8 @@ export default function LoginPage() {
 
     try {
       await login(data.email, data.password)
-      router.push('/dashboard')
+      const user = useAuthStore.getState().user
+      router.push(user?.onboardingCompleted === false ? '/onboarding' : '/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     }

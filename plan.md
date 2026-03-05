@@ -521,53 +521,53 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 #### User Onboarding Flow
 
 ##### Infrastructure
-- [ ] Add `onboardingCompleted` flag to User `settings` JSONB field
-- [ ] Implement first-login detection (check `onboardingCompleted` on auth)
-- [ ] Create `/onboarding` protected route in `src/app/(dashboard)/onboarding/page.tsx`
-- [ ] Add `/onboarding` to `PROTECTED_ROUTES` in `src/proxy.ts` and `config.matcher`
-- [ ] Redirect from registration and login to `/onboarding` when `onboardingCompleted` is false
-- [ ] Create `src/store/onboarding-store.ts` (ephemeral, multi-step wizard state)
-- [ ] Create `src/lib/validations/onboarding.ts` with Zod schemas for each step
+- [x] Add `onboardingCompleted` flag to User `settings` JSONB field
+- [x] Implement first-login detection (check `onboardingCompleted` on auth)
+- [x] Create `/onboarding` protected route in `src/app/(dashboard)/onboarding/page.tsx`
+- [x] Add `/onboarding` to `PROTECTED_ROUTES` in `src/proxy.ts` and `config.matcher`
+- [x] Redirect from registration and login to `/onboarding` when `onboardingCompleted` is false
+- [x] Create `src/store/onboarding-store.ts` (ephemeral, multi-step wizard state)
+- [x] Create `src/lib/validations/onboarding.ts` with Zod schemas for each step
 
 ##### Step 1: Welcome Screen
-- [ ] Create `src/components/onboarding/WelcomeStep.tsx`
-- [ ] Animated welcome with app name and brief tagline
-- [ ] Collect learning motivation (multi-select): anime/manga, travel, career, intellectual challenge, heritage, other
-- [ ] Store motivation in User `settings` JSONB
+- [x] Create `src/components/onboarding/WelcomeStep.tsx`
+- [x] Animated welcome with app name and brief tagline
+- [x] Collect learning motivation (multi-select): anime/manga, travel, career, intellectual challenge, heritage, other
+- [x] Store motivation in User `settings` JSONB
 
 ##### Step 2: Experience Assessment (Quick Quiz)
-- [ ] Create `src/components/onboarding/ExperienceStep.tsx`
-- [ ] 5 hiragana recognition questions (show character, pick romaji from 4 options)
-- [ ] 5 common word meaning questions (show Japanese word, pick English meaning)
-- [ ] 3 basic sentence comprehension questions (show simple sentence, pick meaning)
-- [ ] Score to estimate level: 0-3 correct = absolute beginner, 4-8 = some knowledge, 9-13 = intermediate
-- [ ] Skip option for users who want to go straight to full placement test (Phase 2)
+- [x] Create `src/components/onboarding/ExperienceStep.tsx`
+- [x] 5 hiragana recognition questions (show character, pick romaji from 4 options)
+- [x] 5 common word meaning questions (show Japanese word, pick English meaning)
+- [x] 3 basic sentence comprehension questions (show simple sentence, pick meaning)
+- [x] Score to estimate level: 0-3 correct = absolute beginner, 4-8 = some knowledge, 9-13 = intermediate
+- [x] Skip option for users who want to go straight to full placement test (Phase 2)
 
 ##### Step 3: Goal Setting
-- [ ] Create `src/components/onboarding/GoalStep.tsx`
-- [ ] Target JLPT level selection: N5 / N4 / N3
-- [ ] Daily study time commitment: 15 / 30 / 45 / 60 minutes
-- [ ] Learning pace preference: relaxed / normal / intensive
-- [ ] Display estimated timeline calculation based on selections (e.g., "~6 months to N5 at 30 min/day")
-- [ ] Store all goal settings in User `settings` JSONB
+- [x] Create `src/components/onboarding/GoalStep.tsx`
+- [x] Target JLPT level selection: N5 / N4 / N3
+- [x] Daily study time commitment: 15 / 30 / 45 / 60 minutes
+- [x] Learning pace preference: relaxed / normal / intensive
+- [x] Display estimated timeline calculation based on selections (e.g., "~6 months to N5 at 30 min/day")
+- [x] Store all goal settings in User `settings` JSONB
 
 ##### Step 4: Learning Path Selection
-- [ ] Create `src/components/onboarding/PathSelectionStep.tsx`
-- [ ] Show recommended learning path based on assessment result and target level
-- [ ] Display path overview (milestone count, estimated duration, content summary)
-- [ ] Allow user to override recommended path
-- [ ] Create `UserLearningPath` record for selected path
+- [x] Create `src/components/onboarding/PathSelectionStep.tsx`
+- [x] Show recommended learning path based on assessment result and target level
+- [x] Display path overview (milestone count, estimated duration, content summary)
+- [x] Allow user to override recommended path
+- [x] Create `UserLearningPath` record for selected path
 
 ##### Step 5: Completion
-- [ ] Create `src/components/onboarding/CompletionStep.tsx`
-- [ ] Display personalized study plan summary (path, daily goal, first milestone)
-- [ ] Set `onboardingCompleted = true` in User settings
-- [ ] Redirect to dashboard with one-time welcome banner
-- [ ] Welcome banner shows "Your first step: [first milestone name]" with action button
+- [x] Create `src/components/onboarding/CompletionStep.tsx`
+- [x] Display personalized study plan summary (path, daily goal, first milestone)
+- [x] Set `onboardingCompleted = true` in User settings
+- [x] Redirect to dashboard with one-time welcome banner
+- [x] Welcome banner shows "Your first step: [first milestone name]" with action button
 
 ##### Onboarding API Endpoints
 - [ ] Create `POST /api/v1/onboarding/assessment` — submit quiz answers, return estimated level
-- [ ] Create `POST /api/v1/onboarding/complete` — save goals, assign learning path, set `onboardingCompleted`
+- [x] Create `POST /api/v1/onboarding/complete` — save goals, assign learning path, set `onboardingCompleted`
 - [ ] Create `GET /api/v1/onboarding/status` — check if onboarding is completed (used by proxy/redirect logic)
 
 ##### Landing Page & Help

@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
         email,
         password_hash: passwordHash,
         display_name: displayName ?? null,
+        settings: { onboardingCompleted: false },
       },
       select: {
         id: true,
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
       displayName: user.display_name,
       createdAt: user.created_at.toISOString(),
       lastLoginAt: user.last_login_at?.toISOString() ?? null,
+      onboardingCompleted: false,
     })
   } catch (error) {
     console.error('Register error:', error)

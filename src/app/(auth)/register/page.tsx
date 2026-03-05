@@ -53,7 +53,8 @@ export default function RegisterPage() {
 
     try {
       await registerUser(data.email, data.password, data.displayName || undefined)
-      router.push('/dashboard')
+      const user = useAuthStore.getState().user
+      router.push(user?.onboardingCompleted === false ? '/onboarding' : '/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     }

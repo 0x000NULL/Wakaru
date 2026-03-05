@@ -6,10 +6,12 @@ import Link from 'next/link'
 import { useAuthStore } from '@/store/auth-store'
 import { useProgressStore } from '@/store/progress-store'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { WelcomeBanner } from '@/components/dashboard/welcome-banner'
 import { DailyLessonCard } from '@/components/dashboard/daily-lesson-card'
 import { LearningPathProgress } from '@/components/dashboard/learning-path-progress'
 import { StreakDisplay } from '@/components/dashboard/streak-display'
 import { WeeklyStatsCard } from '@/components/dashboard/weekly-stats-card'
+import { FeatureTour } from '@/components/dashboard/feature-tour'
 import type { GrammarProgressStats } from '@/types/grammar'
 
 function HiraganaStatus({ onUnauthorized }: { onUnauthorized: () => void }) {
@@ -87,6 +89,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <WelcomeBanner />
       <div>
         <h1 className="text-2xl font-bold text-foreground">
           Welcome{user?.displayName ? `, ${user.displayName}` : ''}
@@ -95,15 +98,19 @@ export default function DashboardPage() {
       </div>
 
       <StreakDisplay onUnauthorized={handleUnauthorized} />
-      <DailyLessonCard onUnauthorized={handleUnauthorized} />
+      <div data-tooltip-target="daily-lesson">
+        <DailyLessonCard onUnauthorized={handleUnauthorized} />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <LearningPathProgress onUnauthorized={handleUnauthorized} />
+        <div data-tooltip-target="learning-path">
+          <LearningPathProgress onUnauthorized={handleUnauthorized} />
+        </div>
         <WeeklyStatsCard onUnauthorized={handleUnauthorized} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Link href="/hiragana" className="transition-opacity hover:opacity-80">
+        <Link href="/hiragana" className="transition-opacity hover:opacity-80" data-tooltip-target="srs-reviews">
           <Card>
             <CardHeader>
               <CardTitle>Hiragana & Katakana</CardTitle>
@@ -157,6 +164,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <FeatureTour />
     </div>
   )
 }

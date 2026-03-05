@@ -5,6 +5,11 @@ export interface UserSettings {
   audioAutoplay: boolean
   furiganaDisplay: 'always' | 'hover' | 'never'
   theme: 'system' | 'light' | 'dark'
+  motivations?: string[]
+  targetJlptLevel?: string
+  dailyMinutes?: string
+  learningPace?: string
+  onboardingCompleted: boolean
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -14,4 +19,5 @@ export const DEFAULT_SETTINGS: UserSettings = {
   audioAutoplay: true,
   furiganaDisplay: 'always',
   theme: 'system',
+  onboardingCompleted: true,
 }

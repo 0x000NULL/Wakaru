@@ -20,10 +20,14 @@ export async function getAuthUser(): Promise<AuthUser | null> {
       display_name: true,
       created_at: true,
       last_login_at: true,
+      settings: true,
     },
   })
 
   if (!user) return null
+
+  const settings = user.settings as Record<string, unknown> | null
+  const onboardingCompleted = settings?.onboardingCompleted !== false
 
   return {
     id: user.id,
@@ -31,5 +35,6 @@ export async function getAuthUser(): Promise<AuthUser | null> {
     displayName: user.display_name,
     createdAt: user.created_at.toISOString(),
     lastLoginAt: user.last_login_at?.toISOString() ?? null,
+    onboardingCompleted,
   }
 }

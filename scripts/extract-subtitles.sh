@@ -266,11 +266,11 @@ process_show() {
     
     for mkv_file in "${mkv_files[@]}"; do
         if process_file "$mkv_file" "$show_name" "$show_slug" $file_num $total_files; then
-            ((success_count++))
+            ((success_count++)) || true
         else
-            ((fail_count++))
+            ((fail_count++)) || true
         fi
-        ((file_num++))
+        ((file_num++)) || true
     done
     
     echo ""
@@ -311,7 +311,7 @@ main() {
         log_info "[$show_num/$total_shows] $show"
         echo "========================================="
         process_show "$show"
-        ((show_num++))
+        ((show_num++)) || true
     done
     
     echo ""

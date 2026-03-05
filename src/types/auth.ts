@@ -4,6 +4,7 @@ export interface AuthUser {
   displayName: string | null
   createdAt: string
   lastLoginAt: string | null
+  onboardingCompleted: boolean
 }
 
 export interface JWTPayload {

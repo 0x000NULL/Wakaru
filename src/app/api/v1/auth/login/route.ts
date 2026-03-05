@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
         display_name: true,
         created_at: true,
         last_login_at: true,
+        settings: true,
       },
     })
 
@@ -69,12 +70,16 @@ export async function POST(request: NextRequest) {
     })
     await setAuthCookies(accessToken, refreshToken)
 
+    const settings = user.settings as Record<string, unknown> | null
+    const onboardingCompleted = settings?.onboardingCompleted !== false
+
     return successResponse({
       id: user.id,
       email: user.email,
       displayName: user.display_name,
       createdAt: user.created_at.toISOString(),
       lastLoginAt: new Date().toISOString(),
+      onboardingCompleted,
     })
   } catch (error) {
     console.error('Login error:', error)
