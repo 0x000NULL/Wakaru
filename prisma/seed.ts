@@ -360,6 +360,7 @@ async function main() {
           episode_number: ep.episode_number,
           title: ep.title,
           duration_seconds: ep.duration_seconds,
+          video_url: ep.video_url,
           subtitle_ja_url: ep.subtitle_ja_url,
           subtitle_en_url: ep.subtitle_en_url,
         })),
