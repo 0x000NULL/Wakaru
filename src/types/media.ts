@@ -9,8 +9,8 @@ export interface MediaEpisodeData {
   title_english: string
   duration_seconds: number
   video_url?: string
-  subtitle_ja_url: string
-  subtitle_en_url: string
+  subtitle_ja_url: string | null
+  subtitle_en_url: string | null
 }
 
 /** Shape used in the constants file for seeding */
