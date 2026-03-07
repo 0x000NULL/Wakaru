@@ -4,6 +4,7 @@ import prisma from '@/lib/db'
 import { srsLearnSchema } from '@/lib/validations/srs'
 import { createNewCard, getNextReviewDate } from '@/lib/utils/srs-algorithm'
 import { recordStudyActivity } from '@/lib/utils/study-day'
+import { validateContentItem, getNotFoundMessage } from '@/lib/utils/srs-content-resolver'
 import {
   successResponse,
   createdResponse,
@@ -30,19 +31,16 @@ export async function POST(request: NextRequest) {
       return validationError('Invalid input', details)
     }
 
-    const { itemId } = result.data
+    const { itemId, category } = result.data
 
-    const vocab = await prisma.vocabulary.findUnique({
-      where: { id: itemId },
-      select: { id: true },
-    })
-    if (!vocab) return notFoundError('Vocabulary item not found')
+    const item = await validateContentItem(category, itemId)
+    if (!item) return notFoundError(getNotFoundMessage(category))
 
     const existing = await prisma.userProgress.findUnique({
       where: {
         user_id_category_item_id: {
           user_id: user.id,
-          category: 'vocabulary',
+          category,
           item_id: itemId,
         },
       },
@@ -82,7 +80,7 @@ export async function POST(request: NextRequest) {
     const progress = await prisma.userProgress.create({
       data: {
         user_id: user.id,
-        category: 'vocabulary',
+        category,
         item_id: itemId,
         repetitions: card.repetitions,
         ease_factor: card.easeFactor,
@@ -122,7 +120,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('SRS learn POST error:', error)
+    console.error('SRS learn POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

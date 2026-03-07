@@ -2,16 +2,25 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { useGrammarQuizStore } from '@/store/grammar-quiz-store'
 import { useGrammarStore } from '@/store/grammar-store'
-import { GrammarQuizSetup } from '@/components/grammar/grammar-quiz-setup'
-import { GrammarQuizSession } from '@/components/grammar/grammar-quiz-session'
-import { GrammarQuizResults } from '@/components/grammar/grammar-quiz-results'
 import type { GrammarQuizSessionConfig } from '@/types/grammar-quiz'
+
+const GrammarQuizSetup = dynamic(() =>
+  import('@/components/grammar/grammar-quiz-setup').then((mod) => mod.GrammarQuizSetup),
+)
+const GrammarQuizSession = dynamic(() =>
+  import('@/components/grammar/grammar-quiz-session').then((mod) => mod.GrammarQuizSession),
+)
+const GrammarQuizResults = dynamic(() =>
+  import('@/components/grammar/grammar-quiz-results').then((mod) => mod.GrammarQuizResults),
+)
 
 export default function GrammarPracticePage() {
   const phase = useGrammarQuizStore((s) => s.phase)
   const startSession = useGrammarQuizStore((s) => s.startSession)
+  const startAdaptiveSession = useGrammarQuizStore((s) => s.startAdaptiveSession)
   const patterns = useGrammarStore((s) => s.patterns)
   const fetchPatterns = useGrammarStore((s) => s.fetchPatterns)
 
@@ -30,7 +39,11 @@ export default function GrammarPracticePage() {
         filteredMap.set(p.pattern, p.id)
       }
     }
-    startSession(config, filteredMap)
+    if (config.mode === 'adaptive') {
+      startAdaptiveSession(config, filteredMap)
+    } else {
+      startSession(config, filteredMap)
+    }
   }
 
   return (

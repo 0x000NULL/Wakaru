@@ -2,9 +2,19 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams } from 'next/navigation'
-import { VideoPlayer } from '@/components/media/video-player'
+import dynamic from 'next/dynamic'
 import type { SubtitleCue } from '@/lib/utils/subtitle-parser'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
+
+const VideoPlayer = dynamic(
+  () => import('@/components/media/video-player').then((mod) => mod.VideoPlayer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="aspect-video w-full max-w-4xl animate-pulse rounded-lg bg-black" />
+    ),
+  },
+)
 
 const PROGRESS_SAVE_INTERVAL = 30_000
 

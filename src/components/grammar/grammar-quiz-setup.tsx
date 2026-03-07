@@ -26,12 +26,19 @@ const modeOptions: { value: GrammarQuizMode; label: string; description: string 
     label: 'Mixed',
     description: 'Both question types combined',
   },
+  {
+    value: 'adaptive',
+    label: 'Adaptive',
+    description: 'Focuses on patterns you struggle with most',
+  },
 ]
 
 const jlptOptions: { value: string; label: string }[] = [
   { value: 'all', label: 'All Levels' },
   { value: 'N5', label: 'N5' },
   { value: 'N4', label: 'N4' },
+  { value: 'N3', label: 'N3' },
+  { value: 'N2', label: 'N2' },
 ]
 
 const countOptions = [5, 10, 15, 20, 0] as const
@@ -75,7 +82,7 @@ export function GrammarQuizSetup({ onStart }: GrammarQuizSetupProps) {
 
   function handleStart() {
     if (selectedCategories.size === 0) return
-    const jlptLevels = jlptLevel === 'all' ? ['N5', 'N4'] : [jlptLevel]
+    const jlptLevels = jlptLevel === 'all' ? ['N5', 'N4', 'N3', 'N2'] : [jlptLevel]
     onStart({
       mode,
       categoryIds: [...selectedCategories],

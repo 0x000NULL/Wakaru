@@ -12,7 +12,7 @@ export async function GET() {
 
     return successResponse(data)
   } catch (error) {
-    console.error('Learning path progress GET error:', error)
+    console.error('Learning path progress GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

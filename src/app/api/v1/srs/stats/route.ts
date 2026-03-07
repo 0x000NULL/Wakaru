@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
 import { successResponse, unauthorizedError, serverError } from '@/lib/utils/api-response'
@@ -17,10 +18,15 @@ function getTodayBoundary(): Date {
   return boundary
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const user = await getAuthUser()
     if (!user) return unauthorizedError()
+
+    const category = request.nextUrl.searchParams.get('category') || 'vocabulary'
+    if (category !== 'vocabulary' && category !== 'kanji') {
+      return successResponse({ dueCount: 0, learnedToday: 0, totalLearned: 0 })
+    }
 
     const todayBoundary = getTodayBoundary()
 
@@ -32,21 +38,21 @@ export async function GET() {
         prisma.userProgress.count({
           where: {
             user_id: user.id,
-            category: 'vocabulary',
+            category,
             next_review_at: { lte: new Date() },
           },
         }),
         prisma.userProgress.count({
           where: {
             user_id: user.id,
-            category: 'vocabulary',
+            category,
             created_at: { gte: todayBoundary },
           },
         }),
         prisma.userProgress.count({
           where: {
             user_id: user.id,
-            category: 'vocabulary',
+            category,
           },
         }),
         prisma.user.findUnique({
@@ -56,14 +62,14 @@ export async function GET() {
         prisma.userProgress.count({
           where: {
             user_id: user.id,
-            category: 'vocabulary',
+            category,
             interval: { gte: 30 },
           },
         }),
         prisma.userProgress.count({
           where: {
             user_id: user.id,
-            category: 'vocabulary',
+            category,
             last_reviewed_at: { gte: todayBoundary },
           },
         }),
@@ -74,14 +80,14 @@ export async function GET() {
           },
           where: {
             user_id: user.id,
-            category: 'vocabulary',
+            category,
             total_reviews: { gt: 0 },
           },
         }),
         prisma.userProgress.findMany({
           where: {
             user_id: user.id,
-            category: 'vocabulary',
+            category,
             created_at: { gte: eightWeeksAgo },
           },
           select: { created_at: true },
@@ -126,7 +132,7 @@ export async function GET() {
       weeklyLearning,
     })
   } catch (error) {
-    console.error('SRS stats GET error:', error)
+    console.error('SRS stats GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
 
     return successResponse(entry)
   } catch (error) {
-    console.error('Dictionary lookup GET error:', error)
+    console.error('Dictionary lookup GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

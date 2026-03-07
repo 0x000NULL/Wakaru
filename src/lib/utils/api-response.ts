@@ -40,3 +40,14 @@ export function rateLimitError(message = 'Too many requests') {
 export function serverError(message = 'Internal server error') {
   return errorResponse('INTERNAL_ERROR', message, 500)
 }
+
+export function cachedSuccessResponse<T>(data: T, maxAge: number, meta?: PaginationMeta) {
+  return NextResponse.json(
+    { success: true, data, ...(meta && { meta }) },
+    {
+      headers: {
+        'Cache-Control': `private, max-age=${maxAge}, stale-while-revalidate=${Math.floor(maxAge / 5)}`,
+      },
+    },
+  )
+}

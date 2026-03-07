@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { formatTime } from '@/lib/utils/format-time'
 import type { RecentlyWatchedItem } from '@/types/media'
 
@@ -52,10 +53,12 @@ export function ContinueWatchingSection() {
                 {/* Cover image or gradient placeholder */}
                 <div className="relative h-28">
                   {item.cover_image_url ? (
-                    <img
+                    <Image
                       src={item.cover_image_url}
                       alt={item.title}
-                      className="h-full w-full object-cover"
+                      fill
+                      sizes="300px"
+                      className="object-cover"
                     />
                   ) : (
                     <div

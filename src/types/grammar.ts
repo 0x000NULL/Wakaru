@@ -8,6 +8,10 @@ export type GrammarCategoryId =
   | 'sentence-patterns'
   | 'connectors'
   | 'giving-receiving'
+  | 'expressions'
+  | 'modality'
+  | 'formal-language'
+  | 'conjunctions'
 
 export interface GrammarCategory {
   id: GrammarCategoryId
@@ -50,6 +54,26 @@ export const GRAMMAR_CATEGORIES: GrammarCategory[] = [
     id: 'giving-receiving',
     name: 'Giving & Receiving',
     description: 'Expressions for doing favors and receiving help from others.',
+  },
+  {
+    id: 'expressions',
+    name: 'Expressions',
+    description: 'Set phrases and idiomatic expressions for nuanced communication.',
+  },
+  {
+    id: 'modality',
+    name: 'Modality',
+    description: 'Patterns expressing possibility, obligation, permission, and tendency.',
+  },
+  {
+    id: 'formal-language',
+    name: 'Formal Language',
+    description: 'Formal and written patterns used in business, academic, and official contexts.',
+  },
+  {
+    id: 'conjunctions',
+    name: 'Conjunctions',
+    description: 'Advanced clause connectors for complex sentences and arguments.',
   },
 ]
 
@@ -115,6 +139,162 @@ export const PATTERN_CATEGORY_MAP: Record<string, GrammarCategoryId> = {
   'てあげる・てくれる・てもらう': 'giving-receiving',
   // N4 — Adjectives
   'すぎる': 'adjectives',
+  // N4 Extended — Verbs
+  'てみる': 'verbs',
+  'ておく': 'verbs',
+  'ていく': 'verbs',
+  'てくる': 'verbs',
+  '意向形': 'verbs',
+  '可能形': 'verbs',
+  '命令形': 'verbs',
+  'てほしい': 'verbs',
+  // N4 Extended — Connectors
+  'し': 'connectors',
+  'ために': 'connectors',
+  'ように': 'connectors',
+  'ようにする': 'connectors',
+  'ようになる': 'connectors',
+  'ことにする': 'connectors',
+  'ことになる': 'connectors',
+  'について': 'connectors',
+  'によって': 'connectors',
+  // N4 Extended — Sentence Patterns
+  'ようだ・みたいだ': 'sentence-patterns',
+  'らしい': 'sentence-patterns',
+  'はずだ': 'sentence-patterns',
+  'つもり': 'sentence-patterns',
+  'ところだ': 'sentence-patterns',
+  'かもしれない': 'sentence-patterns',
+  'にちがいない': 'sentence-patterns',
+  // N4 Extended — Adjectives
+  'やすい': 'adjectives',
+  'にくい': 'adjectives',
+  // N4 Extended — Particles
+  'ばかり': 'particles',
+  'だけ': 'particles',
+  'しか...ない': 'particles',
+  'ても': 'connectors',
+  // N3 — Expressions
+  'わけだ': 'expressions',
+  'わけがない': 'expressions',
+  'わけにはいかない': 'expressions',
+  'わけではない': 'expressions',
+  'ものだ': 'expressions',
+  'ものだから': 'expressions',
+  'ことがある': 'expressions',
+  'ことは...が': 'expressions',
+  'というのは': 'expressions',
+  'とは限らない': 'expressions',
+  'さえ...ば': 'expressions',
+  '以上': 'expressions',
+  '上で': 'expressions',
+  // N3 — Modality
+  'べきだ': 'modality',
+  'おそれがある': 'modality',
+  'ことはない': 'modality',
+  'ないわけにはいかない': 'modality',
+  'ざるを得ない': 'modality',
+  'てたまらない': 'modality',
+  'てならない': 'modality',
+  'ようがない': 'modality',
+  'っぽい': 'modality',
+  'がちだ': 'modality',
+  '気味': 'modality',
+  'きる': 'modality',
+  'かけ': 'modality',
+  // N3 — Conjunctions
+  '一方で': 'conjunctions',
+  'にもかかわらず': 'conjunctions',
+  'それにしても': 'conjunctions',
+  'としたら': 'conjunctions',
+  'にしても': 'conjunctions',
+  'として': 'conjunctions',
+  'に対して': 'conjunctions',
+  'に関して': 'conjunctions',
+  'をもとに': 'conjunctions',
+  'に沿って': 'conjunctions',
+  'を通じて': 'conjunctions',
+  'につれて': 'conjunctions',
+  'にしたがって': 'conjunctions',
+  'に伴って': 'conjunctions',
+  '上に': 'conjunctions',
+  // N3 — Sentence Patterns
+  'ことにしている': 'sentence-patterns',
+  'ことになっている': 'sentence-patterns',
+  'たびに': 'sentence-patterns',
+  '最中に': 'sentence-patterns',
+  '際に': 'sentence-patterns',
+  'ついでに': 'sentence-patterns',
+  'っけ': 'sentence-patterns',
+  'かける': 'sentence-patterns',
+  'ふりをする': 'sentence-patterns',
+  '向け': 'sentence-patterns',
+  '向き': 'sentence-patterns',
+  // N3 — Verbs
+  'させられる': 'verbs',
+  'ずに': 'verbs',
+  'っぱなし': 'verbs',
+  'てからでないと': 'verbs',
+  'たとたんに': 'verbs',
+  '次第': 'verbs',
+  'てはじめて': 'verbs',
+  '限り': 'verbs',
+  'かわりに': 'verbs',
+  'どころか': 'verbs',
+  // N3 — Formal Language
+  'において': 'formal-language',
+  'にとって': 'formal-language',
+  'に加えて': 'formal-language',
+  'をはじめ': 'formal-language',
+  'にわたって': 'formal-language',
+  'に基づいて': 'formal-language',
+  '末に': 'formal-language',
+  '以来': 'formal-language',
+  'を問わず': 'formal-language',
+  'ものの': 'formal-language',
+  // N2 — Formal Expressions
+  'に際して': 'formal-language',
+  'をめぐって': 'formal-language',
+  'に先立って': 'formal-language',
+  'を踏まえて': 'formal-language',
+  'にあたって': 'formal-language',
+  'を余儀なくされる': 'formal-language',
+  'に至るまで': 'formal-language',
+  'をもって': 'formal-language',
+  // N2 — Conjunctions
+  'からこそ': 'conjunctions',
+  'ばかりか': 'conjunctions',
+  'としても': 'conjunctions',
+  'たところで': 'conjunctions',
+  'ないことには': 'conjunctions',
+  // N2 — Degree/Extent
+  'ほど...ない': 'expressions',
+  'くらい・ぐらい': 'expressions',
+  'に至る': 'expressions',
+  'に限らず': 'expressions',
+  'はもとより': 'expressions',
+  'のみならず': 'expressions',
+  'に至っては': 'expressions',
+  // N2 — Tendency/State
+  'つつある': 'modality',
+  '一方だ': 'modality',
+  'がたい': 'modality',
+  '得る・得ない': 'modality',
+  'かねる': 'modality',
+  'かねない': 'modality',
+  '抜く': 'modality',
+  // N2 — Reasoning
+  '以上は': 'connectors',
+  '上は': 'connectors',
+  'からには': 'connectors',
+  'ことから': 'connectors',
+  'だけに': 'connectors',
+  // N2 — Other
+  'っこない': 'expressions',
+  'まい': 'expressions',
+  'ものか': 'expressions',
+  'ずにはいられない': 'modality',
+  'てはいられない': 'modality',
 }
 
 export interface GrammarProgressStats {

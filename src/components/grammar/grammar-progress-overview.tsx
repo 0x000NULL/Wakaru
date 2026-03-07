@@ -4,10 +4,20 @@ import { useGrammarStore } from '@/store/grammar-store'
 
 export function GrammarProgressOverview() {
   const progress = useGrammarStore((s) => s.progress)
+  const patterns = useGrammarStore((s) => s.patterns)
 
   if (!progress || progress.total === 0) return null
 
   const percent = Math.round((progress.learned / progress.total) * 100)
+
+  // Compute per-level counts from patterns
+  const levels = ['N5', 'N4', 'N3', 'N2'] as const
+  const levelCounts = levels
+    .map((level) => ({
+      level,
+      count: patterns.filter((p) => p.jlpt_level === level).length,
+    }))
+    .filter((l) => l.count > 0)
 
   return (
     <div className="rounded-lg border border-border bg-background p-4 shadow-sm">
@@ -27,6 +37,15 @@ export function GrammarProgressOverview() {
           style={{ width: `${percent}%` }}
         />
       </div>
+      {levelCounts.length > 1 && (
+        <div className="mt-3 flex gap-3">
+          {levelCounts.map((l) => (
+            <span key={l.level} className="text-xs text-muted-foreground">
+              {l.level}: {l.count} patterns
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

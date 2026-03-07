@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import prisma from '@/lib/db'
 import { forgotPasswordSchema } from '@/lib/validations/auth'
 import { rateLimit } from '@/lib/utils/rate-limit'
+import { getClientIp } from '@/lib/utils/get-client-ip'
 import { sendPasswordResetEmail } from '@/lib/utils/email'
 import {
   successResponse,
@@ -13,7 +14,7 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+    const ip = getClientIp(request)
     const { success: withinLimit } = rateLimit(`forgot:${ip}`, 3, 15 * 60 * 1000)
     if (!withinLimit) {
       return rateLimitError()
@@ -60,7 +61,10 @@ export async function POST(request: NextRequest) {
       message: 'If an account with that email exists, a reset link has been sent.',
     })
   } catch (error) {
-    console.error('Forgot password error:', error)
+    console.error(
+      'Forgot password error:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
     return serverError()
   }
 }

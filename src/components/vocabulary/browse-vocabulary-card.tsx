@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { speakVocab, getFrequencyTier } from '@/lib/utils/vocabulary'
 import { isRichTags } from '@/types/vocabulary'
@@ -18,7 +19,7 @@ interface BrowseVocabularyCardProps {
   onClick: () => void
 }
 
-export function BrowseVocabularyCard({ item, onClick }: BrowseVocabularyCardProps) {
+export const BrowseVocabularyCard = memo(function BrowseVocabularyCard({ item, onClick }: BrowseVocabularyCardProps) {
   const tier = getFrequencyTier(item.frequency_rank)
 
   return (
@@ -80,4 +81,4 @@ export function BrowseVocabularyCard({ item, onClick }: BrowseVocabularyCardProp
       </CardContent>
     </Card>
   )
-}
+})

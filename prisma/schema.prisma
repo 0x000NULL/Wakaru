@@ -12,13 +12,14 @@ datasource db {
 // ============================================================================
 
 model User {
-  id                String    @id @default(cuid())
-  email             String    @unique
-  password_hash     String
-  display_name      String?
-  created_at        DateTime  @default(now())
-  last_login_at     DateTime?
-  settings          Json      @default("{}")
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  password_hash         String
+  display_name          String?
+  password_changed_at   DateTime?
+  created_at            DateTime  @default(now())
+  last_login_at         DateTime?
+  settings              Json      @default("{}")
 
   // Relations
   progress          UserProgress[]
@@ -27,8 +28,27 @@ model User {
   resetTokens       PasswordResetToken[]
   studyDays         StudyDay[]
   learningPaths     UserLearningPath[]
+  refreshTokens     RefreshToken[]
 
   @@map("users")
+}
+
+// ============================================================================
+// REFRESH TOKENS
+// ============================================================================
+
+model RefreshToken {
+  id         String   @id @default(cuid())
+  user_id    String
+  token_hash String   @unique
+  expires_at DateTime
+  revoked    Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("refresh_tokens")
 }
 
 // ============================================================================
@@ -182,6 +202,7 @@ model Vocabulary {
 
   // Relations
   sentences         VocabularySentence[]
+  kanji             KanjiVocabulary[]
 
   @@index([frequency_rank])
   @@index([jlpt_level])
@@ -240,10 +261,26 @@ model Kanji {
   created_at        DateTime  @default(now())
   updated_at        DateTime  @updatedAt
 
+  // Relations
+  vocabulary        KanjiVocabulary[]
+
   @@index([jlpt_level])
   @@index([frequency_rank])
   @@index([grade])
   @@map("kanji")
+}
+
+model KanjiVocabulary {
+  id            String     @id @default(cuid())
+  kanji_id      String
+  vocabulary_id String
+  kanji         Kanji      @relation(fields: [kanji_id], references: [id], onDelete: Cascade)
+  vocabulary    Vocabulary @relation(fields: [vocabulary_id], references: [id], onDelete: Cascade)
+
+  @@unique([kanji_id, vocabulary_id])
+  @@index([kanji_id])
+  @@index([vocabulary_id])
+  @@map("kanji_vocabulary")
 }
 
 // ============================================================================
@@ -306,6 +343,7 @@ model GrammarExample {
 
   pattern           GrammarPattern @relation(fields: [pattern_id], references: [id], onDelete: Cascade)
 
+  @@index([pattern_id])
   @@map("grammar_examples")
 }
 

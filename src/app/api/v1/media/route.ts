@@ -4,7 +4,7 @@ import prisma from '@/lib/db'
 import { mediaQuerySchema } from '@/lib/validations/media'
 import type { Prisma } from '@prisma/client'
 import {
-  successResponse,
+  cachedSuccessResponse,
   validationError,
   unauthorizedError,
   serverError,
@@ -82,14 +82,14 @@ export async function GET(request: NextRequest) {
       episode_count: item._count.episodes,
     }))
 
-    return successResponse(data, {
+    return cachedSuccessResponse(data, 300, {
       total,
       limit,
       offset,
       hasMore: offset + limit < total,
     })
   } catch (error) {
-    console.error('Media GET error:', error)
+    console.error('Media GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

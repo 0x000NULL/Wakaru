@@ -42,14 +42,28 @@ export async function POST(request: NextRequest) {
     }
 
     const newHash = await hashPassword(result.data.newPassword)
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { password_hash: newHash },
-    })
+
+    // Update password, set password_changed_at, and revoke all refresh tokens
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: {
+          password_hash: newHash,
+          password_changed_at: new Date(),
+        },
+      }),
+      prisma.refreshToken.updateMany({
+        where: { user_id: user.id, revoked: false },
+        data: { revoked: true },
+      }),
+    ])
 
     return successResponse({ message: 'Password changed successfully' })
   } catch (error) {
-    console.error('Change password error:', error)
+    console.error(
+      'Change password error:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
     return serverError()
   }
 }

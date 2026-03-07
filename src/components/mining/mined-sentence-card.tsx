@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { formatTime } from '@/lib/utils/format-time'
 import { Card, CardContent } from '@/components/ui/card'
 import type { MinedSentence } from '@/types/mined-sentence'
@@ -11,7 +12,7 @@ interface MinedSentenceCardProps {
   onPlayInContext?: (sentence: MinedSentence) => void
 }
 
-export function MinedSentenceCard({
+export const MinedSentenceCard = memo(function MinedSentenceCard({
   sentence,
   onEdit,
   onDelete,
@@ -91,4 +92,4 @@ export function MinedSentenceCard({
       </CardContent>
     </Card>
   )
-}
+})

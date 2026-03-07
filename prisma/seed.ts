@@ -5,6 +5,9 @@ import { HIRAGANA_CHARACTERS } from '../src/lib/constants/hiragana-data'
 import { KATAKANA_CHARACTERS } from '../src/lib/constants/katakana-data'
 import { N5_GRAMMAR_PATTERNS } from '../src/lib/constants/grammar-data'
 import { N4_GRAMMAR_PATTERNS } from '../src/lib/constants/grammar-data-n4'
+import { N4_EXTENDED_GRAMMAR_PATTERNS } from '../src/lib/constants/grammar-data-n4-extended'
+import { N3_GRAMMAR_PATTERNS } from '../src/lib/constants/grammar-data-n3'
+import { N2_GRAMMAR_PATTERNS } from '../src/lib/constants/grammar-data-n2'
 import { MEDIA_LIBRARY } from '../src/lib/constants/media-data'
 import { ALL_LEARNING_PATHS } from '../src/lib/constants/learning-paths'
 
@@ -296,7 +299,13 @@ async function main() {
   // SEED GRAMMAR PATTERNS (from constants)
   // ============================================================================
   console.log('Seeding grammar patterns...')
-  const ALL_GRAMMAR_PATTERNS = [...N5_GRAMMAR_PATTERNS, ...N4_GRAMMAR_PATTERNS]
+  const ALL_GRAMMAR_PATTERNS = [
+    ...N5_GRAMMAR_PATTERNS,
+    ...N4_GRAMMAR_PATTERNS,
+    ...N4_EXTENDED_GRAMMAR_PATTERNS,
+    ...N3_GRAMMAR_PATTERNS,
+    ...N2_GRAMMAR_PATTERNS,
+  ]
   for (const entry of ALL_GRAMMAR_PATTERNS) {
     const { examples, ...patternData } = entry
     const upserted = await prisma.grammarPattern.upsert({
@@ -321,6 +330,79 @@ async function main() {
     }
   }
   console.log(`✓ Seeded ${ALL_GRAMMAR_PATTERNS.length} grammar patterns with examples`)
+
+  // ============================================================================
+  // SEED KANJI (from data file if it exists)
+  // ============================================================================
+  try {
+    const { KANJI_SEED_DATA } = await import('./data/kanji-seed')
+    console.log('Seeding kanji...')
+    for (const entry of KANJI_SEED_DATA) {
+      await prisma.kanji.upsert({
+        where: { character: entry.character },
+        update: {
+          meanings: entry.meanings,
+          on_yomi: entry.on_yomi,
+          kun_yomi: entry.kun_yomi,
+          nanori: entry.nanori ?? null,
+          radicals: entry.radicals ?? null,
+          stroke_count: entry.stroke_count,
+          grade: entry.grade,
+          jlpt_level: entry.jlpt_level,
+          frequency_rank: entry.frequency_rank,
+          mnemonic: entry.mnemonic,
+        },
+        create: {
+          character: entry.character,
+          meanings: entry.meanings,
+          on_yomi: entry.on_yomi,
+          kun_yomi: entry.kun_yomi,
+          nanori: entry.nanori ?? null,
+          radicals: entry.radicals ?? null,
+          stroke_count: entry.stroke_count,
+          grade: entry.grade,
+          jlpt_level: entry.jlpt_level,
+          frequency_rank: entry.frequency_rank,
+          mnemonic: entry.mnemonic,
+        },
+      })
+    }
+    console.log(`✓ Seeded ${KANJI_SEED_DATA.length} kanji characters`)
+
+    // Link kanji to vocabulary
+    console.log('Linking kanji to vocabulary...')
+    let linkedCount = 0
+    const allVocab = await prisma.vocabulary.findMany({ select: { id: true, word: true } })
+    const allKanji = await prisma.kanji.findMany({ select: { id: true, character: true } })
+
+    for (const kanji of allKanji) {
+      const matchingVocab = allVocab.filter((v) => v.word.includes(kanji.character))
+      for (const vocab of matchingVocab.slice(0, 20)) {
+        try {
+          await prisma.kanjiVocabulary.upsert({
+            where: {
+              kanji_id_vocabulary_id: {
+                kanji_id: kanji.id,
+                vocabulary_id: vocab.id,
+              },
+            },
+            update: {},
+            create: {
+              kanji_id: kanji.id,
+              vocabulary_id: vocab.id,
+            },
+          })
+          linkedCount++
+        } catch {
+          // Skip duplicates silently
+        }
+      }
+    }
+    console.log(`✓ Created ${linkedCount} kanji-vocabulary links`)
+  } catch (e) {
+    console.log('⚠ Kanji seed data not found — skipping kanji seeding')
+    if (process.env.DEBUG) console.error(e)
+  }
 
   // ============================================================================
   // SEED MEDIA CONTENT (from constants)

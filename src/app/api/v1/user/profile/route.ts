@@ -19,7 +19,7 @@ export async function GET() {
 
     return successResponse(user)
   } catch (error) {
-    console.error('Profile error:', error)
+    console.error('Profile error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }
@@ -66,7 +66,7 @@ export async function PATCH(request: NextRequest) {
       onboardingCompleted,
     })
   } catch (error) {
-    console.error('Profile PATCH error:', error)
+    console.error('Profile PATCH error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

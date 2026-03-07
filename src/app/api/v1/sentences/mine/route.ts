@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       createdAt: sentence.created_at.toISOString(),
     })
   } catch (error) {
-    console.error('Mine sentence POST error:', error)
+    console.error('Mine sentence POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }
@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
       { total, limit, offset, hasMore: offset + limit < total },
     )
   } catch (error) {
-    console.error('Mine sentence GET error:', error)
+    console.error('Mine sentence GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

@@ -1,5 +1,5 @@
 export type GrammarExerciseType = 'fill_in_blank' | 'multiple_choice'
-export type GrammarQuizMode = 'fill_in_blank' | 'multiple_choice' | 'mixed'
+export type GrammarQuizMode = 'fill_in_blank' | 'multiple_choice' | 'mixed' | 'adaptive'
 export type GrammarQuizPhase = 'setup' | 'active' | 'results'
 
 export interface GrammarExercise {

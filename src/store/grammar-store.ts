@@ -17,6 +17,7 @@ interface GrammarState {
   // Filters (client-side)
   search: string
   difficulty: GrammarDifficulty | null
+  jlptLevel: string | null
 
   // Progress
   progress: GrammarProgressStats | null
@@ -31,6 +32,7 @@ interface GrammarState {
   fetchProgress: () => Promise<void>
   setSearch: (search: string) => void
   setDifficulty: (difficulty: GrammarDifficulty | null) => void
+  setJlptLevel: (level: string | null) => void
   getFilteredPatterns: () => GrammarPatternListItem[]
   getPatternsByCategory: () => {
     categoryId: GrammarCategoryId
@@ -46,6 +48,7 @@ export const useGrammarStore = create<GrammarState>()((set, get) => ({
   error: null,
   search: '',
   difficulty: null,
+  jlptLevel: null,
   progress: null,
   currentPattern: null,
   isDetailLoading: false,
@@ -55,7 +58,7 @@ export const useGrammarStore = create<GrammarState>()((set, get) => ({
     set({ isLoading: true, error: null })
 
     try {
-      const res = await fetch('/api/v1/grammar?limit=100')
+      const res = await fetch('/api/v1/grammar?limit=500')
       if (!res.ok) {
         set({ isLoading: false, error: 'Failed to load grammar patterns' })
         return
@@ -99,9 +102,10 @@ export const useGrammarStore = create<GrammarState>()((set, get) => ({
 
   setSearch: (search) => set({ search }),
   setDifficulty: (difficulty) => set({ difficulty }),
+  setJlptLevel: (level) => set({ jlptLevel: level }),
 
   getFilteredPatterns: () => {
-    const { patterns, search, difficulty } = get()
+    const { patterns, search, difficulty, jlptLevel } = get()
     let filtered = patterns
 
     if (search) {
@@ -116,6 +120,10 @@ export const useGrammarStore = create<GrammarState>()((set, get) => ({
 
     if (difficulty) {
       filtered = filtered.filter((p) => p.difficulty === difficulty)
+    }
+
+    if (jlptLevel) {
+      filtered = filtered.filter((p) => p.jlpt_level === jlptLevel)
     }
 
     return filtered

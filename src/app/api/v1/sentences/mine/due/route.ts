@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
 
     return successResponse({ dueCount, items })
   } catch (error) {
-    console.error('Mine sentence due GET error:', error)
+    console.error('Mine sentence due GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

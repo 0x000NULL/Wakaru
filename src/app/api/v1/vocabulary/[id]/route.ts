@@ -1,7 +1,9 @@
 import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
+import { isValidId } from '@/lib/utils/validate-id'
 import {
-  successResponse,
+  cachedSuccessResponse,
+  validationError,
   unauthorizedError,
   notFoundError,
   serverError,
@@ -13,6 +15,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (!user) return unauthorizedError()
 
     const { id } = await params
+    if (!isValidId(id)) return validationError('Invalid ID format')
 
     const vocab = await prisma.vocabulary.findUnique({
       where: { id },
@@ -83,13 +86,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         }
       : null
 
-    return successResponse({
+    return cachedSuccessResponse({
       ...vocab,
       sentences: vocab.sentences.map((s) => s.sentence),
       srs,
-    })
+    }, 300)
   } catch (error) {
-    console.error('Vocabulary detail GET error:', error)
+    console.error('Vocabulary detail GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

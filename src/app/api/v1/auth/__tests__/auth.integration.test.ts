@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest'
 import prisma from '@/lib/db'
 
-// Set env vars before any module imports that depend on them
+// Set env vars before any module imports that depend on them (JWT secrets must be >= 32 chars)
 beforeAll(() => {
-  process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing'
+  process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing!!'
   process.env.JWT_REFRESH_SECRET = 'test-jwt-refresh-secret-key-for-testing'
   process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
 })
@@ -87,7 +87,7 @@ describe('Auth API Integration Tests', () => {
       createdEmails.push(email)
 
       const { status, data } = await callRoute('/auth/register', {
-        body: { email, password: 'testpassword123' },
+        body: { email, password: 'TestPassword1' },
       })
 
       expect(status).toBe(201)
@@ -105,14 +105,14 @@ describe('Auth API Integration Tests', () => {
       createdEmails.push(email)
 
       await callRoute('/auth/register', {
-        body: { email, password: 'testpassword123' },
+        body: { email, password: 'TestPassword1' },
       })
 
       // Clear cookies between calls
       mockCookieStore.clear()
 
       const { status, data } = await callRoute('/auth/register', {
-        body: { email, password: 'anotherpassword123' },
+        body: { email, password: 'AnotherPass1' },
       })
 
       expect(status).toBe(409)
@@ -224,6 +224,17 @@ describe('Auth API Integration Tests', () => {
         email: user.email,
       })
 
+      // Store hashed refresh token in DB (required by rotation logic)
+      const crypto = await import('crypto')
+      const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex')
+      await prisma.refreshToken.create({
+        data: {
+          user_id: user.id,
+          token_hash: tokenHash,
+          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        },
+      })
+
       const { status, data } = await callRoute('/auth/refresh', {
         cookies: { refresh_token: refreshToken },
       })
@@ -318,7 +329,7 @@ describe('Auth API Integration Tests', () => {
       })
 
       const { status, data } = await callRoute('/auth/reset-password', {
-        body: { token, password: 'newpassword123' },
+        body: { token, password: 'NewPassword1' },
       })
 
       expect(status).toBe(200)
@@ -329,7 +340,7 @@ describe('Auth API Integration Tests', () => {
       const updatedUser = await prisma.user.findUnique({
         where: { id: user.id },
       })
-      const valid = await verifyPassword('newpassword123', updatedUser!.password_hash)
+      const valid = await verifyPassword('NewPassword1', updatedUser!.password_hash)
       expect(valid).toBe(true)
     })
 
@@ -364,7 +375,7 @@ describe('Auth API Integration Tests', () => {
       })
 
       const { status, data } = await callRoute('/auth/reset-password', {
-        body: { token, password: 'newpassword123' },
+        body: { token, password: 'NewPassword1' },
       })
 
       expect(status).toBe(400)
@@ -393,7 +404,7 @@ describe('Auth API Integration Tests', () => {
       })
 
       const { status, data } = await callRoute('/auth/reset-password', {
-        body: { token, password: 'newpassword123' },
+        body: { token, password: 'NewPassword1' },
       })
 
       expect(status).toBe(400)

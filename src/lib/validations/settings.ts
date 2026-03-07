@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { passwordField } from '@/lib/validations/auth'
 
 export const updateSettingsSchema = z.object({
   dailyNewWordLimit: z.coerce.number().int().min(1).max(100).optional(),
@@ -23,8 +24,8 @@ export type UpdateProfileInput = z.infer<typeof updateProfileSchema>
 
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Current password is required'),
-    newPassword: z.string().min(8, 'New password must be at least 8 characters'),
+    currentPassword: z.string().min(1, 'Current password is required').max(128),
+    newPassword: passwordField,
     confirmPassword: z.string().min(1, 'Please confirm your new password'),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

@@ -5,6 +5,7 @@ import { srsReviewSchema } from '@/lib/validations/srs'
 import { calculateNextReview } from '@/lib/utils/srs-algorithm'
 import type { SRSCard } from '@/types/progress'
 import { recordStudyActivity } from '@/lib/utils/study-day'
+import { validateContentItem, getNotFoundMessage } from '@/lib/utils/srs-content-resolver'
 import {
   successResponse,
   validationError,
@@ -30,19 +31,16 @@ export async function POST(request: NextRequest) {
       return validationError('Invalid input', details)
     }
 
-    const { itemId, rating } = result.data
+    const { itemId, rating, category } = result.data
 
-    const vocab = await prisma.vocabulary.findUnique({
-      where: { id: itemId },
-      select: { id: true },
-    })
-    if (!vocab) return notFoundError('Vocabulary item not found')
+    const item = await validateContentItem(category, itemId)
+    if (!item) return notFoundError(getNotFoundMessage(category))
 
     const progress = await prisma.userProgress.findUnique({
       where: {
         user_id_category_item_id: {
           user_id: user.id,
-          category: 'vocabulary',
+          category,
           item_id: itemId,
         },
       },
@@ -97,7 +95,7 @@ export async function POST(request: NextRequest) {
       correctReviews: updated.correct_reviews,
     })
   } catch (error) {
-    console.error('SRS review POST error:', error)
+    console.error('SRS review POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

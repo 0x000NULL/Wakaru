@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 
-// Set env vars before importing jwt module
+// Set env vars before importing jwt module (must be >= 32 chars)
 beforeAll(() => {
-  process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing'
+  process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing!!'
   process.env.JWT_REFRESH_SECRET = 'test-jwt-refresh-secret-key-for-testing'
 })
 

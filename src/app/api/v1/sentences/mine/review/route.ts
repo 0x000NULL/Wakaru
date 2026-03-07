@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       correctReviews: updated.correct_reviews,
     })
   } catch (error) {
-    console.error('Mine sentence review POST error:', error)
+    console.error('Mine sentence review POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

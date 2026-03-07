@@ -121,7 +121,7 @@ export async function GET() {
 
     return successResponse(data)
   } catch (error) {
-    console.error('Recently watched GET error:', error)
+    console.error('Recently watched GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

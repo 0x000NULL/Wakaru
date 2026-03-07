@@ -6,12 +6,16 @@ import type {
   GrammarQuizSessionConfig,
   GrammarQuizSessionStats,
 } from '@/types/grammar-quiz'
-import { GRAMMAR_EXERCISES, getExercisesByPatterns } from '@/lib/constants/grammar-exercises'
+import { ALL_GRAMMAR_EXERCISES, getExercisesByPatterns } from '@/lib/constants/grammar-exercises-all'
 import {
   generateGrammarQuizQuestions,
   validateGrammarAnswer,
   calculateGrammarSessionStats,
 } from '@/lib/utils/grammar-quiz-engine'
+import {
+  buildAdaptiveQuizQuestions,
+  type PatternProgress,
+} from '@/lib/utils/adaptive-quiz-engine'
 
 interface GrammarQuizState {
   phase: GrammarQuizPhase
@@ -28,6 +32,10 @@ interface GrammarQuizState {
     config: GrammarQuizSessionConfig,
     patternIdMap: Map<string, string>,
   ) => void
+  startAdaptiveSession: (
+    config: GrammarQuizSessionConfig,
+    patternIdMap: Map<string, string>,
+  ) => Promise<void>
   submitAnswer: (userAnswer: string) => void
   nextQuestion: () => void
   restartSession: (patternIdMap: Map<string, string>) => void
@@ -51,7 +59,7 @@ export const useGrammarQuizStore = create<GrammarQuizState>()((set, get) => ({
   lastAnswerCorrect: null,
 
   startSession: (config, patternIdMap) => {
-    const questions = generateGrammarQuizQuestions(config, GRAMMAR_EXERCISES, patternIdMap)
+    const questions = generateGrammarQuizQuestions(config, ALL_GRAMMAR_EXERCISES, patternIdMap)
     set({
       phase: questions.length > 0 ? 'active' : 'setup',
       config,
@@ -62,6 +70,52 @@ export const useGrammarQuizStore = create<GrammarQuizState>()((set, get) => ({
       showingFeedback: false,
       lastAnswerCorrect: null,
     })
+  },
+
+  startAdaptiveSession: async (config, patternIdMap) => {
+    try {
+      const res = await fetch('/api/v1/grammar/progress/detailed')
+      const progressMap = new Map<string, PatternProgress>()
+
+      if (res.ok) {
+        const json = await res.json()
+        const progressData = json.data as PatternProgress[]
+        for (const p of progressData) {
+          progressMap.set(p.patternId, p)
+        }
+      }
+
+      const questions = buildAdaptiveQuizQuestions(
+        ALL_GRAMMAR_EXERCISES,
+        progressMap,
+        patternIdMap,
+        config,
+      )
+
+      set({
+        phase: questions.length > 0 ? 'active' : 'setup',
+        config,
+        questions,
+        currentIndex: 0,
+        answers: [],
+        questionStartTime: Date.now(),
+        showingFeedback: false,
+        lastAnswerCorrect: null,
+      })
+    } catch {
+      // Fallback to regular session on error
+      const questions = generateGrammarQuizQuestions(config, ALL_GRAMMAR_EXERCISES, patternIdMap)
+      set({
+        phase: questions.length > 0 ? 'active' : 'setup',
+        config,
+        questions,
+        currentIndex: 0,
+        answers: [],
+        questionStartTime: Date.now(),
+        showingFeedback: false,
+        lastAnswerCorrect: null,
+      })
+    }
   },
 
   submitAnswer: (userAnswer) => {
@@ -121,7 +175,6 @@ export const useGrammarQuizStore = create<GrammarQuizState>()((set, get) => ({
       missedMap.set(missed.pattern, missed.patternId)
     }
 
-    // Get exercises only for missed patterns
     const missedExercises = getExercisesByPatterns(
       stats.missedPatterns.map((m) => m.pattern),
     )

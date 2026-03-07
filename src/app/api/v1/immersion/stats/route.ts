@@ -62,7 +62,7 @@ export async function GET() {
       weeklyImmersion,
     })
   } catch (error) {
-    console.error('Immersion stats GET error:', error)
+    console.error('Immersion stats GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

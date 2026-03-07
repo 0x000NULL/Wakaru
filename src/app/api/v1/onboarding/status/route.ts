@@ -8,7 +8,7 @@ export async function GET() {
 
     return successResponse({ onboardingCompleted: user.onboardingCompleted })
   } catch (error) {
-    console.error('Onboarding status error:', error)
+    console.error('Onboarding status error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

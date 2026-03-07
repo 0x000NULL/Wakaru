@@ -1,8 +1,10 @@
 import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
 import { loadSubtitles } from '@/lib/utils/subtitle-parser'
+import { isValidId } from '@/lib/utils/validate-id'
 import {
   successResponse,
+  validationError,
   unauthorizedError,
   notFoundError,
   serverError,
@@ -17,6 +19,7 @@ export async function GET(
     if (!user) return unauthorizedError()
 
     const { mediaId, episodeId } = await params
+    if (!isValidId(mediaId) || !isValidId(episodeId)) return validationError('Invalid ID format')
 
     const episode = await prisma.mediaEpisode.findUnique({
       where: { id: episodeId },
@@ -85,7 +88,7 @@ export async function GET(
         : null,
     })
   } catch (error) {
-    console.error('Episode detail GET error:', error)
+    console.error('Episode detail GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
       })),
     })
   } catch (error) {
-    console.error('Media progress GET error:', error)
+    console.error('Media progress GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
       watched_at: progress.watched_at.toISOString(),
     })
   } catch (error) {
-    console.error('Media progress POST error:', error)
+    console.error('Media progress POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

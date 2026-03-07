@@ -5,7 +5,7 @@
 # - DO_SPACES_ACCESS_KEY: DigitalOcean Spaces access key
 # - DO_API_TOKEN: DigitalOcean API token (with Spaces write permissions)
 
-ACCESS_KEY="${DO_SPACES_ACCESS_KEY:-DO801QLKUVEKTXKWCEGY}"
+ACCESS_KEY="${DO_SPACES_ACCESS_KEY:?Error: DO_SPACES_ACCESS_KEY is required}"
 DO_TOKEN="${DO_API_TOKEN}"
 
 if [ -z "$DO_TOKEN" ]; then

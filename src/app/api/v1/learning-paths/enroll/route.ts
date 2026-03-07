@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
     return successResponse(data)
   } catch (error) {
-    console.error('Learning path enroll POST error:', error)
+    console.error('Learning path enroll POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

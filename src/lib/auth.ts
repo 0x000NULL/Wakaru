@@ -18,6 +18,7 @@ export async function getAuthUser(): Promise<AuthUser | null> {
       id: true,
       email: true,
       display_name: true,
+      password_changed_at: true,
       created_at: true,
       last_login_at: true,
       settings: true,
@@ -25,6 +26,14 @@ export async function getAuthUser(): Promise<AuthUser | null> {
   })
 
   if (!user) return null
+
+  // Reject tokens issued before password was changed
+  if (user.password_changed_at && payload.iat) {
+    const changedAtSeconds = Math.floor(user.password_changed_at.getTime() / 1000)
+    if (payload.iat < changedAtSeconds) {
+      return null
+    }
+  }
 
   const settings = user.settings as Record<string, unknown> | null
   const onboardingCompleted = settings?.onboardingCompleted !== false

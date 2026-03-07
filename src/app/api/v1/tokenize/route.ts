@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     return successResponse({ text: result.data.text, tokens })
   } catch (error) {
-    console.error('Tokenize POST error:', error)
+    console.error('Tokenize POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

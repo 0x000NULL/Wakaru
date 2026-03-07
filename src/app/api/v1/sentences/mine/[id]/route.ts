@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
 import { updateMinedSentenceSchema } from '@/lib/validations/sentence'
+import { isValidId } from '@/lib/utils/validate-id'
 import {
   successResponse,
   validationError,
@@ -20,6 +21,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
     if (!user) return unauthorizedError()
 
     const { id } = await params
+    if (!isValidId(id)) return validationError('Invalid ID format')
 
     const sentence = await prisma.minedSentence.findFirst({
       where: { id, user_id: user.id },
@@ -82,7 +84,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
         : null,
     })
   } catch (error) {
-    console.error('Mine sentence GET [id] error:', error)
+    console.error('Mine sentence GET [id] error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }
@@ -93,6 +95,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (!user) return unauthorizedError()
 
     const { id } = await params
+    if (!isValidId(id)) return validationError('Invalid ID format')
 
     const body = await request.json()
     const result = updateMinedSentenceSchema.safeParse(body)
@@ -144,7 +147,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       createdAt: updated.created_at.toISOString(),
     })
   } catch (error) {
-    console.error('Mine sentence PATCH error:', error)
+    console.error('Mine sentence PATCH error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }
@@ -155,6 +158,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
     if (!user) return unauthorizedError()
 
     const { id } = await params
+    if (!isValidId(id)) return validationError('Invalid ID format')
 
     const existing = await prisma.minedSentence.findFirst({
       where: { id, user_id: user.id },
@@ -175,7 +179,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
 
     return successResponse({ deleted: true })
   } catch (error) {
-    console.error('Mine sentence DELETE error:', error)
+    console.error('Mine sentence DELETE error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

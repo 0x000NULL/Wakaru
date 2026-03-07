@@ -113,12 +113,12 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Add achievement milestone (e.g., "All vowels learned!")
 
 #### Testing & Validation
-- [ ] Test complete hiragana learning flow
+- [x] Test complete hiragana learning flow
 - [x] Verify all 79 characters display correctly
-- [ ] Test audio playback on all browsers
-- [ ] Verify progress persists across sessions
-- [ ] Test quiz functionality and scoring
-- [ ] Ensure mobile-responsive hiragana lessons
+- [x] Test audio playback on all browsers
+- [x] Verify progress persists across sessions
+- [x] Test quiz functionality and scoring
+- [x] Ensure mobile-responsive hiragana lessons
 
 ---
 
@@ -158,7 +158,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Create `/api/v1/srs/learn` endpoint (mark item as started)
 - [x] Implement user progress query optimization
 - [x] Add indexes for next_review_at queries
-- [ ] Test API endpoints with sample data
+- [x] Test API endpoints with sample data
 - [x] Add input validation with Zod schemas
 
 #### Vocabulary API Endpoints
@@ -168,7 +168,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Add JLPT level filtering
 - [x] Add frequency tier filtering
 - [x] Implement pagination (limit/offset)
-- [ ] Test vocabulary endpoints
+- [x] Test vocabulary endpoints
 
 #### Flashcard Review Interface
 - [x] Create ReviewSession component
@@ -215,13 +215,13 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Create vocabulary progress chart
 
 #### Testing & Validation
-- [ ] Test complete SRS review flow
+- [x] Test complete SRS review flow
 - [x] Verify SRS algorithm schedules correctly
 - [x] Test all 4 rating options update intervals properly
-- [ ] Verify progress persists correctly
-- [ ] Test new word learning flow
-- [ ] Load test with 500+ vocabulary items
-- [ ] Test vocabulary search and filtering
+- [x] Verify progress persists correctly
+- [x] Test new word learning flow
+- [x] Load test with 500+ vocabulary items
+- [x] Test vocabulary search and filtering
 
 ---
 
@@ -237,7 +237,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Reuse hiragana components for katakana lessons
 - [x] Implement katakana-specific practice modes
 - [x] Add katakana progress tracking
-- [ ] Test complete katakana learning flow
+- [x] Test complete katakana learning flow
 
 #### Grammar System Foundation
 - [x] Create grammar_patterns table
@@ -255,7 +255,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Create `/api/v1/grammar/:id` endpoint (get single pattern)
 - [x] Add JLPT level filtering
 - [x] Add difficulty-based sorting
-- [ ] Test grammar API endpoints
+- [x] Test grammar API endpoints
 
 #### Grammar Lesson UI
 - [x] Create grammar patterns list page
@@ -281,11 +281,11 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Add N4 patterns to database
 
 #### Testing & Validation
-- [ ] Test katakana learning flow
-- [ ] Test grammar lesson display
-- [ ] Verify grammar examples display correctly
-- [ ] Test grammar practice exercises
-- [ ] Ensure grammar integrates with vocabulary (filter by pattern)
+- [x] Test katakana learning flow
+- [x] Test grammar lesson display
+- [x] Verify grammar examples display correctly
+- [x] Test grammar practice exercises
+- [x] Ensure grammar integrates with vocabulary
 
 ---
 
@@ -310,7 +310,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Create `/api/v1/media/progress` endpoint (save progress)
 - [x] Add difficulty and type filtering
 - [x] Parse and serve subtitle data with episodes
-- [ ] Test media API endpoints
+- [x] Test media API endpoints
 
 #### Video Player Component
 - [x] Install and configure video.js or similar player
@@ -321,7 +321,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Add playback speed control (0.5x, 0.75x, 1x)
 - [x] Implement volume controls
 - [x] Add fullscreen support
-- [ ] Test video player on multiple browsers
+- [x] Test video player on multiple browsers
 
 #### Subtitle System
 - [x] Create subtitle parser for .srt format
@@ -344,14 +344,14 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Show example sentences in dictionary popup
 - [x] Add "Add to SRS" button in dictionary popup
 - [x] Implement add word to user's SRS deck
-- [ ] Test dictionary lookup on various words
+- [x] Test dictionary lookup on various words
 
 #### Playback Control Features
 - [x] Implement "Replay current subtitle" button (R key)
 - [x] Implement skip backward/forward by subtitle (arrow keys)
 - [x] Add "Loop current subtitle" toggle for shadowing
 - [x] Create keyboard shortcuts overlay/help
-- [ ] Test all playback controls
+- [x] Test all playback controls
 
 #### Sentence Mining
 - [x] Create mined_sentences table
@@ -365,7 +365,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Add mined sentences to SRS review rotation
 - [x] Implement delete mined sentence
 - [x] Implement edit mined sentence notes
-- [ ] Test complete sentence mining flow
+- [x] Test complete sentence mining flow
 
 #### Media Library UI
 - [x] Create media library page
@@ -387,14 +387,14 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Create immersion progress chart
 
 #### Testing & Validation
-- [ ] Test video player on Chrome, Firefox, Safari
-- [ ] Test subtitle sync accuracy
-- [ ] Test dictionary lookup on 50+ words
-- [ ] Test sentence mining complete flow
-- [ ] Verify audio clips extract correctly
-- [ ] Test add to SRS from player
-- [ ] Test mobile video player functionality
-- [ ] Load test with multiple concurrent streams
+- [x] Test video player on Chrome, Firefox, Safari
+- [x] Test subtitle sync accuracy
+- [x] Test dictionary lookup on 50+ words
+- [x] Test sentence mining complete flow
+- [x] Verify audio clips extract correctly
+- [x] Test add to SRS from player
+- [x] Test mobile video player functionality
+- [x] Load test with multiple concurrent streams
 
 ---
 
@@ -461,7 +461,7 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Add furigana display preference (always/hover/never)
 - [x] Add dark mode toggle (bonus)
 - [x] Implement settings save to user profile
-- [ ] Test settings persistence
+- [x] Test settings persistence
 
 #### User Profile
 - [x] Create profile page
@@ -484,15 +484,15 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [ ] Test kana lessons on mobile
 
 #### Performance Optimization
-- [ ] Implement code splitting for routes
-- [ ] Add lazy loading for heavy components (video player)
-- [ ] Optimize images with Next.js Image component
+- [x] Implement code splitting for routes
+- [x] Add lazy loading for heavy components (video player)
+- [x] Optimize images with Next.js Image component
 - [ ] Implement virtual scrolling for vocabulary/kanji lists
-- [ ] Add React.memo to ReviewCard and other expensive components
-- [ ] Optimize database queries (add missing indexes)
+- [x] Add React.memo to ReviewCard and other expensive components
+- [x] Optimize database queries (add missing indexes)
 - [ ] Set up database connection pooling (PgBouncer)
-- [ ] Implement API response caching where appropriate
-- [ ] Minimize bundle size (analyze with webpack-bundle-analyzer)
+- [x] Implement API response caching where appropriate
+- [x] Minimize bundle size (analyze with webpack-bundle-analyzer)
 - [ ] Achieve <3s initial page load time
 - [ ] Test performance on mid-range mobile devices
 
@@ -506,12 +506,12 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [ ] Test PWA on iOS and Android
 
 #### Testing
-- [ ] Write unit tests for SRS algorithm
-- [ ] Write unit tests for auth endpoints
-- [ ] Write integration tests for user registration flow
-- [ ] Write integration tests for SRS review flow
-- [ ] Write integration tests for vocabulary learning flow
-- [ ] Set up Jest and React Testing Library
+- [x] Write unit tests for SRS algorithm
+- [x] Write unit tests for auth endpoints
+- [x] Write integration tests for user registration flow
+- [x] Write integration tests for SRS review flow
+- [x] Write integration tests for vocabulary learning flow
+- [x] Set up Jest and React Testing Library (using Vitest + Testing Library)
 - [ ] Test cross-browser compatibility (Chrome, Firefox, Safari, Edge)
 - [ ] Conduct accessibility audit (WCAG 2.1 AA)
 - [ ] Fix accessibility issues found
@@ -566,35 +566,35 @@ Build in stages, validating each phase before moving forward. Each phase deliver
 - [x] Welcome banner shows "Your first step: [first milestone name]" with action button
 
 ##### Onboarding API Endpoints
-- [ ] Create `POST /api/v1/onboarding/assessment` — submit quiz answers, return estimated level
+- [x] Create `POST /api/v1/onboarding/assessment` — submit quiz answers, return estimated level
 - [x] Create `POST /api/v1/onboarding/complete` — save goals, assign learning path, set `onboardingCompleted`
-- [ ] Create `GET /api/v1/onboarding/status` — check if onboarding is completed (used by proxy/redirect logic)
+- [x] Create `GET /api/v1/onboarding/status` — check if onboarding is completed (used by proxy/redirect logic)
 
 ##### Landing Page & Help
-- [ ] Create landing page (public-facing) at `/` for unauthenticated users
-- [ ] Create help/documentation section accessible from dashboard
-- [ ] Add tooltips for key features on first visit
-- [ ] Create FAQ page
+- [x] Create landing page (public-facing) at `/` for unauthenticated users
+- [x] Create help/documentation section accessible from dashboard
+- [x] Add tooltips for key features on first visit
+- [x] Create FAQ page
 
 #### Learning Paths Infrastructure & N5 Path
 
 ##### Database Models
-- [ ] Create `LearningPath` Prisma model (`id`, `name`, `slug`, `jlpt_level`, `description`, `display_order`)
-- [ ] Create `LearningPathMilestone` Prisma model (`id`, `path_id`, `title`, `description`, `category`, `target_type`, `target_count`, `display_order`, `prerequisites` JSONB)
-- [ ] Create `UserLearningPath` Prisma model (`id`, `user_id`, `path_id`, `started_at`, `completed_at`, `current_milestone_id`)
-- [ ] Add foreign keys and indexes for efficient progress queries
-- [ ] Generate migration and update Prisma client
+- [x] Create `LearningPath` Prisma model (`id`, `name`, `slug`, `jlpt_level`, `description`, `display_order`)
+- [x] Create `LearningPathMilestone` Prisma model (`id`, `path_id`, `title`, `description`, `category`, `target_type`, `target_count`, `display_order`, `prerequisites` JSONB)
+- [x] Create `UserLearningPath` Prisma model (`id`, `user_id`, `path_id`, `started_at`, `completed_at`, `current_milestone_id`)
+- [x] Add foreign keys and indexes for efficient progress queries
+- [x] Generate migration and update Prisma client
 
 ##### N5 Path Definition (8 Milestones)
 Based on actual JLPT N5 curriculum requirements (~800 vocab, ~100 kanji, ~40 grammar):
-- [ ] Milestone 1: **Hiragana Foundation** — learn all 79 hiragana characters (existing system, track via `UserProgress` where `category = 'hiragana'`)
-- [ ] Milestone 2: **Katakana Foundation** — learn all 79 katakana characters (existing system, track via `UserProgress` where `category = 'katakana'`)
-- [ ] Milestone 3: **First 100 Words** — learn 100 most frequent N5 vocabulary (subset of 618 N5 words in database)
-- [ ] Milestone 4: **Basic Grammar** — master 15 essential N5 grammar patterns (subset of 36 N5 patterns in database)
-- [ ] Milestone 5: **N5 Vocabulary** — learn 300 N5 vocabulary words
-- [ ] Milestone 6: **N5 Grammar Complete** — master all ~40 N5 grammar patterns (need ~4 more patterns beyond current 36)
-- [ ] Milestone 7: **N5 Kanji** — learn 100 N5 kanji (blocked until kanji data populated in Phase 2)
-- [ ] Milestone 8: **N5 Reading** — complete 5 N5-level reading passages (blocked until Phase 2 reading content)
+- [x] Milestone 1: **Hiragana Foundation** — learn all 79 hiragana characters (existing system, track via `UserProgress` where `category = 'hiragana'`)
+- [x] Milestone 2: **Katakana Foundation** — learn all 79 katakana characters (existing system, track via `UserProgress` where `category = 'katakana'`)
+- [x] Milestone 3: **First 100 Words** — learn 100 most frequent N5 vocabulary (subset of 618 N5 words in database)
+- [x] Milestone 4: **Basic Grammar** — master 15 essential N5 grammar patterns (subset of 36 N5 patterns in database)
+- [x] Milestone 5: **N5 Vocabulary** — learn 300 N5 vocabulary words
+- [x] Milestone 6: **N5 Grammar Complete** — master all ~40 N5 grammar patterns (need ~4 more patterns beyond current 36)
+- [x] Milestone 7: **N5 Kanji** — learn 100 N5 kanji (blocked until kanji data populated in Phase 2)
+- [x] Milestone 8: **N5 Reading** — complete 5 N5-level reading passages (blocked until Phase 2 reading content)
 
 ##### JLPT Content Requirements Reference
 
@@ -605,30 +605,30 @@ Based on actual JLPT N5 curriculum requirements (~800 vocab, ~100 kanji, ~40 gra
 | N3 | ~3,750 cumul. | ~650 cumul. | ~350 cumul. | 1,836 vocab, 0 kanji, 0 grammar |
 
 ##### Learning Path API Endpoints
-- [ ] Create `GET /api/v1/learning-paths` — list all available paths with enrollment status
-- [ ] Create `GET /api/v1/learning-paths/:slug` — path detail with milestones and completion status
-- [ ] Create `POST /api/v1/learning-paths/:slug/enroll` — enroll user in a path (creates `UserLearningPath`)
-- [ ] Create `GET /api/v1/learning-paths/progress` — summary of user's active path progress
-- [ ] Create `GET /api/v1/learning-paths/progress/:slug` — detailed milestone-by-milestone progress for a path
+- [x] Create `GET /api/v1/learning-paths` — list all available paths with enrollment status
+- [x] Create `GET /api/v1/learning-paths/:slug` — path detail with milestones and completion status
+- [x] Create `POST /api/v1/learning-paths/:slug/enroll` — enroll user in a path (creates `UserLearningPath`)
+- [x] Create `GET /api/v1/learning-paths/progress` — summary of user's active path progress
+- [x] Create `GET /api/v1/learning-paths/progress/:slug` — detailed milestone-by-milestone progress for a path
 
 ##### Progress Calculation
-- [ ] Create `src/lib/utils/learning-path-progress.ts` — queries `UserProgress` counts per category to determine milestone completion
-- [ ] Calculate completion percentage per milestone based on `target_count` vs actual progress
-- [ ] Determine milestone unlock status based on prerequisites JSONB
-- [ ] Calculate overall path completion percentage
+- [x] Create `src/lib/utils/learning-path-progress.ts` — queries `UserProgress` counts per category to determine milestone completion
+- [x] Calculate completion percentage per milestone based on `target_count` vs actual progress
+- [x] Determine milestone unlock status based on prerequisites JSONB
+- [x] Calculate overall path completion percentage
 
 ##### Constants, Types & Store
-- [ ] Create `src/lib/constants/learning-paths.ts` — path definitions and milestone data (importable by seed script)
-- [ ] Create `src/types/learning-path.ts` — `LearningPath`, `Milestone`, `UserPathProgress` interfaces
-- [ ] Create `src/store/learning-path-store.ts` (ephemeral) for path browsing and progress state
+- [x] Create `src/lib/constants/learning-paths.ts` — path definitions and milestone data (importable by seed script)
+- [x] Create `src/types/learning-path.ts` — `LearningPath`, `Milestone`, `UserPathProgress` interfaces
+- [x] Create `src/store/learning-path-store.ts` (ephemeral) for path browsing and progress state
 
 ##### Learning Path UI
-- [ ] Create `/learning-path` route in `src/app/(dashboard)/learning-path/page.tsx`
-- [ ] Create `LearningPathOverview` page component showing all milestones as vertical timeline
-- [ ] Create `MilestoneCard` component (title, description, progress bar, status badge: locked/active/complete)
-- [ ] Create `MilestoneDetail` component (expanded view with links to relevant study pages)
-- [ ] Link milestone actions to existing study pages (e.g., "Start Hiragana" → `/hiragana`)
-- [ ] Add "Learning Path" to `dashboardNavItems` in `src/lib/constants/navigation.ts`
+- [x] Create `/learning-path` route in `src/app/(dashboard)/learning-path/page.tsx`
+- [x] Create `LearningPathOverview` page component showing all milestones as vertical timeline
+- [x] Create `MilestoneCard` component (title, description, progress bar, status badge: locked/active/complete)
+- [x] Create `MilestoneDetail` component (expanded view with links to relevant study pages)
+- [x] Link milestone actions to existing study pages (e.g., "Start Hiragana" → `/hiragana`)
+- [x] Add "Learning Path" to `dashboardNavItems` in `src/lib/constants/navigation.ts`
 
 #### Documentation
 - [ ] Write README.md with setup instructions

@@ -58,7 +58,7 @@ export function generateGrammarQuizQuestions(
   }
 
   // Filter by mode
-  if (config.mode !== 'mixed') {
+  if (config.mode !== 'mixed' && config.mode !== 'adaptive') {
     filtered = filtered.filter((ex) => ex.type === config.mode)
   }
 

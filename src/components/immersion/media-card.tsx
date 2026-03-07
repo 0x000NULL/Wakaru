@@ -1,6 +1,8 @@
 'use client'
 
+import { memo } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import type { MediaContentListItem } from '@/types/media'
 
@@ -21,16 +23,20 @@ const placeholderColors: Record<string, string> = {
   youtube: 'from-red-500/20 to-rose-500/20',
 }
 
-export function MediaCard({ item }: MediaCardProps) {
+export const MediaCard = memo(function MediaCard({ item }: MediaCardProps) {
   return (
     <Link href={`/immersion/${item.id}`}>
       <Card className="transition-shadow hover:shadow-md">
         {item.cover_image_url ? (
-          <img
-            src={item.cover_image_url}
-            alt={item.title}
-            className="h-32 w-full rounded-t-lg object-cover"
-          />
+          <div className="relative h-32 w-full">
+            <Image
+              src={item.cover_image_url}
+              alt={item.title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="rounded-t-lg object-cover"
+            />
+          </div>
         ) : (
           <div
             className={`flex h-32 items-center justify-center rounded-t-lg bg-gradient-to-br ${placeholderColors[item.type] ?? 'from-gray-500/20 to-gray-500/20'}`}
@@ -65,4 +71,4 @@ export function MediaCard({ item }: MediaCardProps) {
       </Card>
     </Link>
   )
-}
+})

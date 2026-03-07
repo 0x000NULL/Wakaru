@@ -56,7 +56,7 @@ JWT-based auth with HTTP-only cookies (`access_token` 7d, `refresh_token` 30d). 
 
 | Layer | File | Purpose |
 |-------|------|---------|
-| Proxy | `src/proxy.ts` | Protects `/dashboard/*`, `/hiragana/*`, `/katakana/*`, `/vocabulary/*`, `/grammar/*`; redirects authed users from auth pages (Node.js runtime) |
+| Proxy | `src/proxy.ts` | Protects `/dashboard/*`, `/learning-path/*`, `/hiragana/*`, `/katakana/*`, `/vocabulary/*`, `/grammar/*`, `/immersion/*`, `/settings/*`; redirects authed users from auth pages (Node.js runtime) |
 | Auth helper | `src/lib/auth.ts` | `getAuthUser()` — reads cookie, verifies JWT, fetches user |
 | JWT | `src/lib/utils/jwt.ts` | `signAccessToken`, `signRefreshToken`, `verifyAccessToken`, `verifyRefreshToken` |
 | Cookies | `src/lib/utils/cookies.ts` | `setAuthCookies`, `clearAuthCookies` (HTTP-only, Secure, SameSite=Strict) |
@@ -221,9 +221,71 @@ Grammar patterns with browsing, detail views, and quiz practice.
 
 Components in `src/components/grammar/`. Stores: `grammarStore`, `grammarQuizStore` (both ephemeral).
 
+### Immersion System
+
+Media watching with Japanese subtitle parsing, dictionary lookup, and sentence mining.
+
+**Routes**:
+
+| Route | Purpose |
+|-------|---------|
+| `/immersion` | Media library — browse anime/drama with difficulty filters |
+| `/immersion/[mediaId]` | Media detail — episode list, progress tracking |
+| `/immersion/watch/[mediaId]/[episodeId]` | Video player with synced JP/EN subtitles, click-to-lookup |
+| `/immersion/sentences` | Mined sentence collection |
+| `/immersion/sentences/review` | SRS review for mined sentences |
+
+**Key utilities**:
+- `src/lib/utils/subtitle-parser.ts` — Parses SRT/ASS subtitle formats
+- `src/lib/utils/subtitle-sync.ts` — Syncs subtitles with video playback
+- `src/lib/utils/subtitle-navigation.ts` — Jump between subtitle lines
+- `src/lib/utils/tokenizer.ts` — Japanese text tokenization via kuromoji
+- `src/lib/utils/audio-extraction.ts` — Extract audio clips from episodes
+- `src/lib/utils/screenshot-capture.ts` — Capture screenshots from video
+
+**API endpoints**:
+- `GET/POST /api/v1/media` — Browse media library
+- `GET /api/v1/media/[mediaId]` — Media detail with episodes
+- `GET /api/v1/media/[mediaId]/episodes/[episodeId]` — Episode detail with subtitle URLs
+- `POST /api/v1/media/progress` — Save watch progress
+- `GET /api/v1/media/recently-watched` — Recent watch history
+- `POST /api/v1/media/extract-audio` — Audio clip extraction
+- `GET /api/v1/immersion/stats` — Immersion statistics
+- `GET /api/v1/dictionary/lookup` — Dictionary lookup for clicked words
+- `GET /api/v1/tokenize` — Tokenize Japanese text
+- `CRUD /api/v1/sentences/mine` — Mined sentence management
+- `GET /api/v1/sentences/mine/due` — Due mined sentences for review
+- `POST /api/v1/sentences/mine/review` — Submit mined sentence review
+
+Data: `src/lib/constants/media-data.ts`. Components in `src/components/immersion/`. Stores: `mediaStore`, `subtitleStore`, `dictionaryStore`, `minedSentenceStore`, `minedSentenceReviewStore` (all ephemeral).
+
+### Learning Paths
+
+Structured learning paths with milestone tracking.
+
+**Route**: `/learning-path` — Enroll in paths (e.g., "JLPT N5"), view milestone progress across kana/vocabulary/grammar/kanji categories.
+
+**Key files**:
+- `src/lib/constants/learning-paths.ts` — Path definitions with milestones
+- `src/lib/utils/learning-path-progress.ts` — Progress computation across categories
+
+**API endpoints**:
+- `GET /api/v1/learning-paths` — List available paths
+- `POST /api/v1/learning-paths/enroll` — Enroll in a path
+- `GET /api/v1/learning-paths/[slug]/progress` — Path progress with milestone completion
+- `GET /api/v1/learning-path/progress` — Overall learning progress
+
+### User Features
+
+**Dashboard** (`/dashboard`): Aggregated stats, due reviews, study streak, recent activity. Store: `dashboardStore`. API: `GET /api/v1/user/stats/dashboard`.
+
+**Settings** (`/settings`): User profile, password change, preferences. APIs: `GET/PUT /api/v1/user/profile`, `POST /api/v1/user/change-password`, `GET/PUT /api/v1/user/settings`.
+
+**Study streaks** (`src/lib/utils/streak.ts`, `src/lib/utils/study-day.ts`): Track daily study activity. Model: `StudyDay`. API: `GET /api/v1/user/streak`.
+
 ### State Management
 
-8 Zustand stores in `src/store/`:
+14 Zustand stores in `src/store/`:
 
 | Store | File | Persistence | Purpose |
 |-------|------|-------------|---------|
@@ -235,17 +297,24 @@ Components in `src/components/grammar/`. Stores: `grammarStore`, `grammarQuizSto
 | `browseStore` | `browse-store.ts` | Ephemeral | Vocabulary browsing with filters |
 | `grammarStore` | `grammar-store.ts` | Ephemeral | Grammar pattern browsing |
 | `grammarQuizStore` | `grammar-quiz-store.ts` | Ephemeral | Grammar quiz sessions |
+| `dashboardStore` | `dashboard-store.ts` | Ephemeral | Dashboard stats and activity |
+| `mediaStore` | `media-store.ts` | Ephemeral | Media library browsing |
+| `subtitleStore` | `subtitle-store.ts` | Ephemeral | Subtitle playback state |
+| `dictionaryStore` | `dictionary-store.ts` | Ephemeral | Dictionary lookup results |
+| `minedSentenceStore` | `mined-sentence-store.ts` | Ephemeral | Mined sentence collection |
+| `minedSentenceReviewStore` | `mined-sentence-review-store.ts` | Ephemeral | Mined sentence SRS review |
 
 Only `authStore` persists to localStorage. All others are ephemeral and mirror server state.
 
-### Database Models (17 Prisma models)
+### Database Models (21 Prisma models)
 
 Core models in `prisma/schema.prisma`:
-- **User management**: `User`, `PasswordResetToken`
+- **User management**: `User`, `PasswordResetToken`, `StudyDay`
 - **SRS tracking**: `UserProgress` (shared by kana, vocabulary, grammar — keyed by `category` + `item_id`)
 - **Content**: `Kana`, `Vocabulary`, `Kanji`, `GrammarPattern`, `GrammarExample`, `ExampleSentence`
 - **Relationships**: `VocabularySentence` (junction)
-- **Media** (future immersion): `MediaContent`, `MediaEpisode`, `UserMediaProgress`, `MinedSentence`
+- **Learning paths**: `LearningPath`, `LearningPathMilestone`, `UserLearningPath`
+- **Media & immersion**: `MediaContent`, `MediaEpisode`, `UserMediaProgress`, `MinedSentence`
 
 ### Deployment
 
@@ -270,5 +339,5 @@ To add a new protected route, add it to both `PROTECTED_ROUTES` in `src/proxy.ts
 - **Component files**: UI primitives in `src/components/ui/`, layout in `src/components/layout/`, feature components in `src/components/{feature}/` (e.g., `src/components/hiragana/`, `src/components/vocabulary/`, `src/components/grammar/`)
 - **Utility files**: kebab-case in `src/lib/utils/` (e.g., `rate-limit.ts`, `srs-algorithm.ts`)
 - **Constants files**: Static data in `src/lib/constants/` — importable by both app code and `prisma/seed.ts`
-- **Type files**: Shared interfaces in `src/types/` (e.g., `kana.ts`, `vocabulary.ts`, `grammar.ts`, `grammar-quiz.ts`)
-- **Validation files**: Zod schemas in `src/lib/validations/` (e.g., `auth.ts`, `vocabulary.ts`, `grammar.ts`, `srs.ts`)
+- **Type files**: Shared interfaces in `src/types/` (e.g., `kana.ts`, `vocabulary.ts`, `grammar.ts`, `media.ts`, `mined-sentence.ts`, `learning-path.ts`)
+- **Validation files**: Zod schemas in `src/lib/validations/` (e.g., `auth.ts`, `vocabulary.ts`, `grammar.ts`, `srs.ts`, `media.ts`, `sentence.ts`, `learning-path.ts`)

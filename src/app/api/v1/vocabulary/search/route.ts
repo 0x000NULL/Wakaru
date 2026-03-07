@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
 
     return successResponse({ query: q, count: formatted.length, items: formatted })
   } catch (error) {
-    console.error('Vocabulary search GET error:', error)
+    console.error('Vocabulary search GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

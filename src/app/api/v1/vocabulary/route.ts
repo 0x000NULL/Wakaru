@@ -5,7 +5,7 @@ import { vocabularyQuerySchema } from '@/lib/validations/vocabulary'
 import { getFrequencyRankRange } from '@/lib/utils/frequency-tier-range'
 import type { Prisma } from '@prisma/client'
 import {
-  successResponse,
+  cachedSuccessResponse,
   validationError,
   unauthorizedError,
   serverError,
@@ -88,14 +88,14 @@ export async function GET(request: NextRequest) {
       sentences: item.sentences.map((s) => s.sentence),
     }))
 
-    return successResponse(formatted, {
+    return cachedSuccessResponse(formatted, 300, {
       total,
       limit,
       offset,
       hasMore: offset + limit < total,
     })
   } catch (error) {
-    console.error('Vocabulary GET error:', error)
+    console.error('Vocabulary GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

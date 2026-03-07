@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
 import { srsNewQuerySchema } from '@/lib/validations/srs'
+import { fetchNewItems } from '@/lib/utils/srs-content-resolver'
 import {
   successResponse,
   validationError,
@@ -26,55 +27,19 @@ export async function GET(request: NextRequest) {
       return validationError('Invalid query parameters', details)
     }
 
-    const { limit } = result.data
+    const { limit, category } = result.data
 
     const existingProgress = await prisma.userProgress.findMany({
-      where: { user_id: user.id, category: 'vocabulary' },
+      where: { user_id: user.id, category },
       select: { item_id: true },
     })
     const learnedIds = existingProgress.map((p) => p.item_id)
 
-    const items = await prisma.vocabulary.findMany({
-      where: {
-        id: { notIn: learnedIds.length > 0 ? learnedIds : undefined },
-        frequency_rank: { not: null },
-      },
-      orderBy: { frequency_rank: 'asc' },
-      take: limit,
-      select: {
-        id: true,
-        word: true,
-        reading: true,
-        meaning: true,
-        part_of_speech: true,
-        jlpt_level: true,
-        frequency_rank: true,
-        tags: true,
-        audio_url: true,
-        sentences: {
-          take: 3,
-          select: {
-            sentence: {
-              select: {
-                id: true,
-                japanese: true,
-                english: true,
-                furigana: true,
-              },
-            },
-          },
-        },
-      },
-    })
+    const items = await fetchNewItems(category, learnedIds, limit)
 
-    const formatted = items.map((item) => ({
-      ...item,
-      sentences: item.sentences.map((s) => s.sentence),
-    }))
-
-    return successResponse({ count: formatted.length, items: formatted })
+    return successResponse({ count: items.length, items })
   } catch (error) {
-    console.error('SRS new GET error:', error)
+    console.error('SRS new GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

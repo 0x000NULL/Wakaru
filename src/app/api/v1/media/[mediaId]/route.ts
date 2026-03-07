@@ -1,7 +1,9 @@
 import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
+import { isValidId } from '@/lib/utils/validate-id'
 import {
   successResponse,
+  validationError,
   unauthorizedError,
   notFoundError,
   serverError,
@@ -16,6 +18,7 @@ export async function GET(
     if (!user) return unauthorizedError()
 
     const { mediaId } = await params
+    if (!isValidId(mediaId)) return validationError('Invalid ID format')
 
     const media = await prisma.mediaContent.findUnique({
       where: { id: mediaId },
@@ -88,7 +91,7 @@ export async function GET(
       episodes,
     })
   } catch (error) {
-    console.error('Media detail GET error:', error)
+    console.error('Media detail GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

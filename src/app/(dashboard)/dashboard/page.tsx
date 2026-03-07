@@ -46,6 +46,39 @@ function HiraganaStatus({ onUnauthorized }: { onUnauthorized: () => void }) {
   )
 }
 
+function KanjiStatus({ onUnauthorized }: { onUnauthorized: () => void }) {
+  const [dueCount, setDueCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetch('/api/v1/srs/stats?category=kanji')
+      .then((res) => {
+        if (res.status === 401) {
+          onUnauthorized()
+          return null
+        }
+        return res.ok ? res.json() : null
+      })
+      .then((json) => {
+        if (json?.data) setDueCount(json.data.dueCount ?? 0)
+      })
+      .catch(() => {})
+  }, [onUnauthorized])
+
+  if (dueCount === null) {
+    return <p className="mt-3 text-xs font-medium text-primary">Start Learning</p>
+  }
+
+  if (dueCount > 0) {
+    return (
+      <p className="mt-3 text-xs font-medium text-amber-600 dark:text-amber-400">
+        {dueCount} review{dueCount !== 1 ? 's' : ''} due
+      </p>
+    )
+  }
+
+  return <p className="mt-3 text-xs font-medium text-primary">Browse Kanji</p>
+}
+
 function GrammarStatus({ onUnauthorized }: { onUnauthorized: () => void }) {
   const [progress, setProgress] = useState<GrammarProgressStats | null>(null)
 
@@ -97,7 +130,9 @@ export default function DashboardPage() {
         <p className="mt-1 text-muted-foreground">Your Japanese learning journey starts here.</p>
       </div>
 
-      <StreakDisplay onUnauthorized={handleUnauthorized} />
+      <div data-tooltip-target="streak-display">
+        <StreakDisplay onUnauthorized={handleUnauthorized} />
+      </div>
       <div data-tooltip-target="daily-lesson">
         <DailyLessonCard onUnauthorized={handleUnauthorized} />
       </div>
@@ -106,11 +141,13 @@ export default function DashboardPage() {
         <div data-tooltip-target="learning-path">
           <LearningPathProgress onUnauthorized={handleUnauthorized} />
         </div>
-        <WeeklyStatsCard onUnauthorized={handleUnauthorized} />
+        <div data-tooltip-target="weekly-stats">
+          <WeeklyStatsCard onUnauthorized={handleUnauthorized} />
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Link href="/hiragana" className="transition-opacity hover:opacity-80" data-tooltip-target="srs-reviews">
+        <Link href="/hiragana" className="transition-opacity hover:opacity-80" data-tooltip-target="kana-section">
           <Card>
             <CardHeader>
               <CardTitle>Hiragana & Katakana</CardTitle>
@@ -124,7 +161,7 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Link href="/vocabulary" className="transition-opacity hover:opacity-80">
+        <Link href="/vocabulary" className="transition-opacity hover:opacity-80" data-tooltip-target="vocabulary-card">
           <Card>
             <CardHeader>
               <CardTitle>Vocabulary</CardTitle>
@@ -138,7 +175,7 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Link href="/grammar" className="transition-opacity hover:opacity-80">
+        <Link href="/grammar" className="transition-opacity hover:opacity-80" data-tooltip-target="grammar-card">
           <Card>
             <CardHeader>
               <CardTitle>Grammar</CardTitle>
@@ -152,17 +189,33 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Immersion</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Practice with real Japanese media, interactive subtitles, and sentence mining.
-            </p>
-            <p className="mt-3 text-xs font-medium text-primary">Coming soon</p>
-          </CardContent>
-        </Card>
+        <Link href="/kanji" className="transition-opacity hover:opacity-80">
+          <Card>
+            <CardHeader>
+              <CardTitle>Kanji</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Learn kanji characters with stroke order, readings, and vocabulary connections.
+              </p>
+              <KanjiStatus onUnauthorized={handleUnauthorized} />
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/immersion" className="transition-opacity hover:opacity-80">
+          <Card>
+            <CardHeader>
+              <CardTitle>Immersion</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Practice with real Japanese media, interactive subtitles, and sentence mining.
+              </p>
+              <p className="mt-3 text-xs font-medium text-primary">Start Watching</p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <FeatureTour />

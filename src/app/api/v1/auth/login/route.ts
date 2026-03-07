@@ -1,10 +1,12 @@
 import { NextRequest } from 'next/server'
+import crypto from 'crypto'
 import prisma from '@/lib/db'
 import { loginSchema } from '@/lib/validations/auth'
 import { verifyPassword } from '@/lib/utils/password'
 import { signAccessToken, signRefreshToken } from '@/lib/utils/jwt'
 import { setAuthCookies } from '@/lib/utils/cookies'
 import { rateLimit } from '@/lib/utils/rate-limit'
+import { getClientIp } from '@/lib/utils/get-client-ip'
 import {
   successResponse,
   validationError,
@@ -15,7 +17,7 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+    const ip = getClientIp(request)
     const { success: withinLimit } = rateLimit(`login:${ip}`, 10, 15 * 60 * 1000)
     if (!withinLimit) {
       return rateLimitError()
@@ -35,6 +37,16 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, password } = result.data
+
+    // Per-account rate limiting (prevents distributed brute force)
+    const { success: accountWithinLimit } = rateLimit(
+      `login-account:${email.toLowerCase()}`,
+      5,
+      15 * 60 * 1000
+    )
+    if (!accountWithinLimit) {
+      return rateLimitError()
+    }
 
     const user = await prisma.user.findUnique({
       where: { email },
@@ -68,6 +80,17 @@ export async function POST(request: NextRequest) {
       userId: user.id,
       email: user.email,
     })
+
+    // Store hashed refresh token in DB
+    const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex')
+    await prisma.refreshToken.create({
+      data: {
+        user_id: user.id,
+        token_hash: tokenHash,
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      },
+    })
+
     await setAuthCookies(accessToken, refreshToken)
 
     const settings = user.settings as Record<string, unknown> | null
@@ -82,7 +105,7 @@ export async function POST(request: NextRequest) {
       onboardingCompleted,
     })
   } catch (error) {
-    console.error('Login error:', error)
+    console.error('Login error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

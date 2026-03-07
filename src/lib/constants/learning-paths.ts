@@ -65,7 +65,7 @@ export const N5_LEARNING_PATH: LearningPathDefinition = {
       description: 'Learn 100 essential N5 kanji characters',
       category: 'kanji',
       targetCount: 100,
-      blocked: true,
+      linkHref: '/kanji',
     },
     {
       id: 'n5-reading',

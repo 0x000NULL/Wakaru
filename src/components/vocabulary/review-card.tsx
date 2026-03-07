@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ReviewRatingButtons } from '@/components/vocabulary/review-rating-buttons'
@@ -16,7 +17,7 @@ interface ReviewCardProps {
   isSubmitting: boolean
 }
 
-export function ReviewCard({ item, isRevealed, onReveal, onRate, isSubmitting }: ReviewCardProps) {
+export const ReviewCard = memo(function ReviewCard({ item, isRevealed, onReveal, onRate, isSubmitting }: ReviewCardProps) {
   return (
     <Card className="mx-auto max-w-lg">
       <CardContent className="space-y-6">
@@ -109,4 +110,4 @@ export function ReviewCard({ item, isRevealed, onReveal, onRate, isSubmitting }:
       </CardContent>
     </Card>
   )
-}
+})

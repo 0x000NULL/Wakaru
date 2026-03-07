@@ -23,11 +23,39 @@ export const FEATURE_TOOLTIPS: TooltipConfig[] = [
       'Track your progress through structured milestones. Complete each step to unlock the next — from kana to immersion.',
   },
   {
-    id: 'srs-reviews',
-    targetSelector: '[data-tooltip-target="srs-reviews"]',
-    title: 'SRS Reviews',
+    id: 'kana-section',
+    targetSelector: '[data-tooltip-target="kana-section"]',
+    title: 'Kana: Your First Step',
     content:
-      'Characters and words you have learned appear here when they are due for review. Keeping up with reviews is key to long-term retention.',
+      'Start here — learning hiragana and katakana is the foundation for reading Japanese. Master these first.',
+  },
+  {
+    id: 'vocabulary-card',
+    targetSelector: '[data-tooltip-target="vocabulary-card"]',
+    title: 'Vocabulary',
+    content:
+      'Build your word bank with spaced repetition. Words you learn are scheduled for review at optimal intervals so you never forget them.',
+  },
+  {
+    id: 'grammar-card',
+    targetSelector: '[data-tooltip-target="grammar-card"]',
+    title: 'Grammar Patterns',
+    content:
+      'Learn Japanese grammar through clear pattern explanations and practice exercises, organized by JLPT level.',
+  },
+  {
+    id: 'weekly-stats',
+    targetSelector: '[data-tooltip-target="weekly-stats"]',
+    title: 'Your Progress',
+    content:
+      'Track your weekly learning stats here — items learned, study time, and retention rate. Use this to stay on track.',
+  },
+  {
+    id: 'streak-display',
+    targetSelector: '[data-tooltip-target="streak-display"]',
+    title: 'Study Activity',
+    content:
+      'This shows your daily study consistency. No pressure — it is purely informational, never punitive.',
   },
 ]
 

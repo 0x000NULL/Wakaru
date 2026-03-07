@@ -1,13 +1,19 @@
 'use client'
 
+import Link from 'next/link'
 import type { GrammarPatternDetailItem } from '@/types/grammar'
 import { GrammarExampleList } from '@/components/grammar/grammar-example-list'
+import { GRAMMAR_COMPARISONS } from '@/lib/constants/grammar-comparisons'
 
 interface GrammarPatternDetailProps {
   pattern: GrammarPatternDetailItem
 }
 
 export function GrammarPatternDetail({ pattern }: GrammarPatternDetailProps) {
+  const relatedComparisons = GRAMMAR_COMPARISONS.filter((c) =>
+    c.patterns.includes(pattern.pattern),
+  )
+
   return (
     <div className="space-y-6">
       {/* Formation */}
@@ -46,6 +52,25 @@ export function GrammarPatternDetail({ pattern }: GrammarPatternDetailProps) {
           <p className="mt-1 leading-relaxed text-amber-900 dark:text-amber-200">
             {pattern.common_mistakes}
           </p>
+        </div>
+      )}
+
+      {/* Related Comparisons */}
+      {relatedComparisons.length > 0 && (
+        <div>
+          <h2 className="mb-2 text-lg font-semibold text-foreground">Related Comparisons</h2>
+          <div className="space-y-2">
+            {relatedComparisons.map((comparison) => (
+              <Link
+                key={comparison.id}
+                href={`/grammar/compare/${comparison.id}`}
+                className="block rounded-lg border border-border p-3 transition-colors hover:bg-muted/50"
+              >
+                <p className="font-medium text-foreground">{comparison.title}</p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{comparison.summary}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 

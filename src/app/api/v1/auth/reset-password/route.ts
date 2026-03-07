@@ -3,6 +3,7 @@ import prisma from '@/lib/db'
 import { resetPasswordSchema } from '@/lib/validations/auth'
 import { hashPassword } from '@/lib/utils/password'
 import { rateLimit } from '@/lib/utils/rate-limit'
+import { getClientIp } from '@/lib/utils/get-client-ip'
 import {
   successResponse,
   validationError,
@@ -13,7 +14,7 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+    const ip = getClientIp(request)
     const { success: withinLimit } = rateLimit(`reset:${ip}`, 5, 15 * 60 * 1000)
     if (!withinLimit) {
       return rateLimitError()
@@ -55,11 +56,18 @@ export async function POST(request: NextRequest) {
     await prisma.$transaction([
       prisma.user.update({
         where: { id: resetToken.user_id },
-        data: { password_hash: passwordHash },
+        data: {
+          password_hash: passwordHash,
+          password_changed_at: new Date(),
+        },
       }),
       prisma.passwordResetToken.update({
         where: { id: resetToken.id },
         data: { used: true },
+      }),
+      prisma.refreshToken.updateMany({
+        where: { user_id: resetToken.user_id, revoked: false },
+        data: { revoked: true },
       }),
     ])
 
@@ -67,7 +75,10 @@ export async function POST(request: NextRequest) {
       message: 'Password has been reset successfully.',
     })
   } catch (error) {
-    console.error('Reset password error:', error)
+    console.error(
+      'Reset password error:',
+      error instanceof Error ? error.message : 'Unknown error'
+    )
     return serverError()
   }
 }

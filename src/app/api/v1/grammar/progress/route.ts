@@ -29,7 +29,7 @@ export async function GET() {
 
     return successResponse({ total, learned, mastered })
   } catch (error) {
-    console.error('Grammar progress GET error:', error)
+    console.error('Grammar progress GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
 
     return successResponse({ total, learned, mastered })
   } catch (error) {
-    console.error('Grammar progress POST error:', error)
+    console.error('Grammar progress POST error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

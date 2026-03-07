@@ -2,6 +2,7 @@ import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
 import { getStudyDate } from '@/lib/utils/study-day'
 import { successResponse, unauthorizedError, serverError } from '@/lib/utils/api-response'
+import { getCached, setCached } from '@/lib/utils/server-cache'
 import type { DashboardStatsResponse, WeeklyVelocityEntry } from '@/types/dashboard'
 
 function getMonday(d: Date): Date {
@@ -21,6 +22,10 @@ export async function GET() {
   try {
     const user = await getAuthUser()
     if (!user) return unauthorizedError()
+
+    const cacheKey = `dashboard-stats:${user.id}`
+    const cached = getCached<DashboardStatsResponse>(cacheKey)
+    if (cached) return successResponse(cached)
 
     const today = getStudyDate()
 
@@ -181,9 +186,11 @@ export async function GET() {
       weeklyVelocity,
     }
 
+    setCached(cacheKey, result, 60_000)
+
     return successResponse(result)
   } catch (error) {
-    console.error('Dashboard stats GET error:', error)
+    console.error('Dashboard stats GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

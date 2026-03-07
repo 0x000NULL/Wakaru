@@ -28,12 +28,14 @@ function assTimeToSeconds(time: string): number {
 /**
  * Strip ASS override tags like {\b1}, {\i0}, {\pos(x,y)}, etc.
  * Also convert \N and \n line breaks to newlines.
+ * Strips HTML tags to prevent XSS.
  */
 function stripAssTags(text: string): string {
   return text
     .replace(/\{[^}]*\}/g, '')
     .replace(/\\N/g, '\n')
     .replace(/\\n/g, '\n')
+    .replace(/<[^>]*>/g, '')
     .trim()
 }
 
@@ -126,7 +128,10 @@ export function parseSrt(content: string): SubtitleCue[] {
 
     const startTime = timeParts[0].trim()
     const endTime = timeParts[1].trim()
-    const text = lines.slice(2).join('\n')
+    const text = lines
+      .slice(2)
+      .join('\n')
+      .replace(/<[^>]*>/g, '')
 
     cues.push({
       index,
@@ -158,10 +163,14 @@ export async function loadSubtitles(subtitleUrl: string): Promise<SubtitleCue[] 
         return null
       }
       content = await response.text()
-    } 
+    }
     // Local path: read from filesystem (backwards compatibility)
     else {
-      const filePath = path.join(process.cwd(), 'public', subtitleUrl)
+      const publicDir = path.resolve(process.cwd(), 'public')
+      const filePath = path.resolve(publicDir, subtitleUrl)
+      if (!filePath.startsWith(publicDir + path.sep)) {
+        return null // path traversal attempt
+      }
       content = await readFile(filePath, 'utf-8')
     }
 

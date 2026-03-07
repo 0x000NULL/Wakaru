@@ -4,7 +4,7 @@ import prisma from '@/lib/db'
 import { grammarQuerySchema } from '@/lib/validations/grammar'
 import type { Prisma } from '@prisma/client'
 import {
-  successResponse,
+  cachedSuccessResponse,
   validationError,
   unauthorizedError,
   serverError,
@@ -77,14 +77,14 @@ export async function GET(request: NextRequest) {
       }),
     ])
 
-    return successResponse(items, {
+    return cachedSuccessResponse(items, 300, {
       total,
       limit,
       offset,
       hasMore: offset + limit < total,
     })
   } catch (error) {
-    console.error('Grammar GET error:', error)
+    console.error('Grammar GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

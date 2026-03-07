@@ -25,7 +25,7 @@ export async function GET() {
 
     return successResponse(settings)
   } catch (error) {
-    console.error('User settings GET error:', error)
+    console.error('User settings GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }
@@ -62,7 +62,7 @@ export async function PATCH(request: NextRequest) {
 
     return successResponse(merged)
   } catch (error) {
-    console.error('User settings PATCH error:', error)
+    console.error('User settings PATCH error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

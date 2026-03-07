@@ -39,7 +39,7 @@ export async function GET() {
       heatmap: streakData.studyDays,
     })
   } catch (error) {
-    console.error('Streak GET error:', error)
+    console.error('Streak GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

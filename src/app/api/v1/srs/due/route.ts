@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import prisma from '@/lib/db'
 import { srsDueQuerySchema } from '@/lib/validations/srs'
+import { fetchDueItems } from '@/lib/utils/srs-content-resolver'
 import {
   successResponse,
   validationError,
@@ -26,13 +27,13 @@ export async function GET(request: NextRequest) {
       return validationError('Invalid query parameters', details)
     }
 
-    const { limit } = result.data
+    const { limit, category } = result.data
     const now = new Date()
 
     const totalDue = await prisma.userProgress.count({
       where: {
         user_id: user.id,
-        category: 'vocabulary',
+        category,
         next_review_at: { lte: now },
       },
     })
@@ -44,7 +45,7 @@ export async function GET(request: NextRequest) {
     const dueRecords = await prisma.userProgress.findMany({
       where: {
         user_id: user.id,
-        category: 'vocabulary',
+        category,
         next_review_at: { lte: now },
       },
       orderBy: { next_review_at: 'asc' },
@@ -62,61 +63,11 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    const vocabIds = dueRecords.map((r) => r.item_id)
-    const vocabItems = await prisma.vocabulary.findMany({
-      where: { id: { in: vocabIds } },
-      select: {
-        id: true,
-        word: true,
-        reading: true,
-        meaning: true,
-        part_of_speech: true,
-        jlpt_level: true,
-        frequency_rank: true,
-        tags: true,
-        audio_url: true,
-        sentences: {
-          take: 3,
-          select: {
-            sentence: {
-              select: {
-                id: true,
-                japanese: true,
-                english: true,
-                furigana: true,
-              },
-            },
-          },
-        },
-      },
-    })
-
-    const vocabMap = new Map(vocabItems.map((v) => [v.id, v]))
-
-    const items = dueRecords
-      .map((record) => {
-        const vocab = vocabMap.get(record.item_id)
-        if (!vocab) return null
-        return {
-          ...vocab,
-          sentences: vocab.sentences.map((s) => s.sentence),
-          srs: {
-            repetitions: record.repetitions,
-            easeFactor: record.ease_factor,
-            interval: record.interval,
-            status: record.status,
-            nextReviewAt: record.next_review_at?.toISOString() ?? null,
-            lastReviewedAt: record.last_reviewed_at?.toISOString() ?? null,
-            totalReviews: record.total_reviews,
-            correctReviews: record.correct_reviews,
-          },
-        }
-      })
-      .filter(Boolean)
+    const items = await fetchDueItems(category, dueRecords)
 
     return successResponse({ dueCount: totalDue, items })
   } catch (error) {
-    console.error('SRS due GET error:', error)
+    console.error('SRS due GET error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

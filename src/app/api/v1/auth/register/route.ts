@@ -1,10 +1,12 @@
 import { NextRequest } from 'next/server'
+import crypto from 'crypto'
 import prisma from '@/lib/db'
 import { registerSchema } from '@/lib/validations/auth'
 import { hashPassword } from '@/lib/utils/password'
 import { signAccessToken, signRefreshToken } from '@/lib/utils/jwt'
 import { setAuthCookies } from '@/lib/utils/cookies'
 import { rateLimit } from '@/lib/utils/rate-limit'
+import { getClientIp } from '@/lib/utils/get-client-ip'
 import {
   createdResponse,
   validationError,
@@ -15,7 +17,7 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+    const ip = getClientIp(request)
     const { success: withinLimit } = rateLimit(`register:${ip}`, 5, 15 * 60 * 1000)
     if (!withinLimit) {
       return rateLimitError()
@@ -64,6 +66,17 @@ export async function POST(request: NextRequest) {
       userId: user.id,
       email: user.email,
     })
+
+    // Store hashed refresh token in DB
+    const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex')
+    await prisma.refreshToken.create({
+      data: {
+        user_id: user.id,
+        token_hash: tokenHash,
+        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      },
+    })
+
     await setAuthCookies(accessToken, refreshToken)
 
     return createdResponse({
@@ -75,7 +88,7 @@ export async function POST(request: NextRequest) {
       onboardingCompleted: false,
     })
   } catch (error) {
-    console.error('Register error:', error)
+    console.error('Register error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

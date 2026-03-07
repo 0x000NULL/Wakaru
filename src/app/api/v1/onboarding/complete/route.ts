@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 
     return successResponse({ onboardingCompleted: true })
   } catch (error) {
-    console.error('Onboarding complete error:', error)
+    console.error('Onboarding complete error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

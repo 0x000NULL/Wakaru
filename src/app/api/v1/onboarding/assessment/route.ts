@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     return successResponse({ totalScore, maxScore, level, previousStudy, sections })
   } catch (error) {
-    console.error('Assessment submission error:', error)
+    console.error('Assessment submission error:', error instanceof Error ? error.message : 'Unknown error')
     return serverError()
   }
 }

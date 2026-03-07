@@ -1,10 +1,18 @@
 'use client'
 
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { useQuizStore } from '@/store/quiz-store'
-import { QuizSetup } from '@/components/hiragana/quiz-setup'
-import { QuizSession } from '@/components/hiragana/quiz-session'
-import { QuizResults } from '@/components/hiragana/quiz-results'
+
+const QuizSetup = dynamic(() =>
+  import('@/components/hiragana/quiz-setup').then((mod) => mod.QuizSetup),
+)
+const QuizSession = dynamic(() =>
+  import('@/components/hiragana/quiz-session').then((mod) => mod.QuizSession),
+)
+const QuizResults = dynamic(() =>
+  import('@/components/hiragana/quiz-results').then((mod) => mod.QuizResults),
+)
 
 export default function HiraganaPracticePage() {
   const phase = useQuizStore((s) => s.phase)
